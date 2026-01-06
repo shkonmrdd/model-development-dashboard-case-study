@@ -103,24 +103,24 @@ export default function Home() {
           <ProjectListHeader
           />
 
-          <ProjectStatusTabs
-            value={statusFilter}
-            totalCount={data?.length}
-            statusTotals={statusTotals}
-            onValueChange={(value) => updateParam("status", value)}
-          />
-
           <ProjectToolbar
             typeFilter={typeFilter}
             departmentFilter={departmentFilter}
             departmentOptions={departmentOptions}
             sortFilter={sortFilter}
             query={query}
-            hasFilters={hasFilters}
             onTypeChange={(value) => updateParam("type", value)}
             onDepartmentChange={(value) => updateParam("department", value)}
             onSortChange={(value) => updateParam("sort", value)}
             onQueryChange={(value) => updateParam("q", value)}
+          />
+
+          <ProjectStatusTabs
+            value={statusFilter}
+            totalCount={data?.length}
+            statusTotals={statusTotals}
+            hasFilters={hasFilters}
+            onValueChange={(value) => updateParam("status", value)}
             onClearFilters={clearFilters}
           />
 
