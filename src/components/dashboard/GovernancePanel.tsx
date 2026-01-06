@@ -5,7 +5,6 @@ import {
   CheckCircle2,
   Clock,
   ShieldCheck,
-  User,
   MessageSquareText,
 } from "lucide-react";
 
@@ -56,13 +55,6 @@ function formatTime(iso?: string | null) {
   }).format(date);
 }
 
-function initials(name?: string | null) {
-  const trimmed = (name ?? "").trim();
-  if (!trimmed) return "U";
-  const parts = trimmed.split(/\s+/).slice(0, 2);
-  return parts.map((part) => part[0]?.toUpperCase()).join("");
-}
-
 function humanizeCamelCase(input: string) {
   return input
     .replace(/([a-z])([A-Z])/g, "$1 $2")
@@ -99,17 +91,15 @@ function checklistStatusTone(status?: string) {
 export function GovernancePanel({ projectId }: { projectId: string }) {
   const { data, isLoading, error, refetch } = useProjectGovernance(projectId);
 
-  const approvals = data?.approvals ?? [];
   const stakeholders = data?.stakeholders ?? [];
   const checklist = data?.compliance_checklist ?? null;
 
-  const sortedApprovals = React.useMemo(
-    () =>
-      [...approvals].sort((a, b) =>
+  const sortedApprovals = React.useMemo(() => {
+    const approvals = data?.approvals ?? [];
+    return [...approvals].sort((a, b) =>
         String(b.created_at ?? "").localeCompare(String(a.created_at ?? ""))
-      ),
-    [approvals]
-  );
+    );
+  }, [data?.approvals]);
 
   return (
     <Card id="governance" className="relative overflow-hidden">
@@ -227,7 +217,7 @@ export function GovernancePanel({ projectId }: { projectId: string }) {
                         key={approval.approval_id}
                         className={cn(
                           "rounded-xl border bg-background/80 shadow-sm transition",
-                          "hover:-translate-y-[1px] hover:shadow-md"
+                          "hover:-translate-y-px hover:shadow-md"
                         )}
                       >
                         <div className="flex items-start gap-3 border-b border-muted/40 p-3">

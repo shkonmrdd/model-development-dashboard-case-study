@@ -49,7 +49,7 @@ export function ProjectToolbar({
     <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
       <div className="flex flex-wrap items-center gap-2">
         <Select value={typeFilter} onValueChange={onTypeChange}>
-          <SelectTrigger className="h-9 w-[180px]">
+          <SelectTrigger className="h-9 w-45">
             <SelectValue placeholder="Type" />
           </SelectTrigger>
           <SelectContent align="start">
@@ -77,7 +77,7 @@ export function ProjectToolbar({
         </Select>
 
         <Select value={sortFilter} onValueChange={onSortChange}>
-          <SelectTrigger className="h-9 w-[190px]">
+          <SelectTrigger className="h-9 w-47.5">
             <SelectValue placeholder="Sort" />
           </SelectTrigger>
           <SelectContent align="start">
