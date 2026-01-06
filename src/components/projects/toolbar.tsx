@@ -15,24 +15,33 @@ import {
   typeOptions,
   type SortOption,
 } from "@/components/projects/constants";
-import type { ProjectTypeFilter } from "@/components/projects/use-filters";
+import type {
+  ProjectDepartmentFilter,
+  ProjectTypeFilter,
+} from "@/components/projects/use-filters";
 
 const searchPlaceholder = "Search project, owner, dept\u2026";
 
 type ProjectToolbarProps = {
   typeFilter: ProjectTypeFilter;
+  departmentFilter: ProjectDepartmentFilter;
+  departmentOptions: string[];
   sortFilter: SortOption;
   query: string;
   onTypeChange: (value: string) => void;
+  onDepartmentChange: (value: string) => void;
   onSortChange: (value: string) => void;
   onQueryChange: (value: string) => void;
 };
 
 export function ProjectToolbar({
   typeFilter,
+  departmentFilter,
+  departmentOptions,
   sortFilter,
   query,
   onTypeChange,
+  onDepartmentChange,
   onSortChange,
   onQueryChange,
 }: ProjectToolbarProps) {
@@ -48,6 +57,20 @@ export function ProjectToolbar({
             {typeOptions.map((type) => (
               <SelectItem key={type} value={type}>
                 {type}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select value={departmentFilter} onValueChange={onDepartmentChange}>
+          <SelectTrigger className="h-9 w-[220px]">
+            <SelectValue placeholder="Department" />
+          </SelectTrigger>
+          <SelectContent align="start">
+            <SelectItem value="all">All departments</SelectItem>
+            {departmentOptions.map((department) => (
+              <SelectItem key={department} value={department}>
+                {department}
               </SelectItem>
             ))}
           </SelectContent>

@@ -12,6 +12,7 @@ import {
 
 export type ProjectStatusFilter = "all" | ProjectStatus;
 export type ProjectTypeFilter = "all" | ProjectType;
+export type ProjectDepartmentFilter = "all" | string;
 
 export function useProjectFilters() {
   const router = useRouter();
@@ -39,6 +40,9 @@ export function useProjectFilters() {
     ? sortFilterRaw
     : "updated_desc";
 
+  const departmentFilter =
+    (searchParams.get("department") as ProjectDepartmentFilter) ?? "all";
+
   const updateParam = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams);
     const trimmed = value.trim();
@@ -58,13 +62,17 @@ export function useProjectFilters() {
   };
 
   const hasFilters =
-    query.trim().length > 0 || statusFilter !== "all" || typeFilter !== "all";
+    query.trim().length > 0 ||
+    statusFilter !== "all" ||
+    typeFilter !== "all" ||
+    departmentFilter !== "all";
 
   return {
     query,
     statusFilter,
     typeFilter,
     sortFilter,
+    departmentFilter,
     hasFilters,
     updateParam,
     clearFilters,

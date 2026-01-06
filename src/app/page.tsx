@@ -20,6 +20,7 @@ export default function Home() {
     statusFilter,
     typeFilter,
     sortFilter,
+    departmentFilter,
     hasFilters,
     updateParam,
     clearFilters,
@@ -65,6 +66,12 @@ export default function Home() {
       items = items.filter((project) => project.project_type === typeFilter);
     }
 
+    if (departmentFilter !== "all") {
+      items = items.filter(
+        (project) => project.department?.name === departmentFilter
+      );
+    }
+
     items.sort((a, b) => {
       if (sortFilter === "name_asc") return a.project_name.localeCompare(b.project_name);
 
@@ -75,7 +82,20 @@ export default function Home() {
     });
 
     return items;
-  }, [data, query, statusFilter, typeFilter, sortFilter]);
+  }, [data, query, statusFilter, typeFilter, departmentFilter, sortFilter]);
+
+  const departmentOptions = useMemo(() => {
+    if (!data) return [];
+    const departmentNames = new Set<string>();
+
+    data.forEach((project) => {
+      if (project.department?.name) {
+        departmentNames.add(project.department.name);
+      }
+    });
+
+    return Array.from(departmentNames).sort((a, b) => a.localeCompare(b));
+  }, [data]);
 
   return (
     <DashboardShell breadcrumbs={[{ label: "Projects" }]}>
@@ -95,9 +115,12 @@ export default function Home() {
 
           <ProjectToolbar
             typeFilter={typeFilter}
+            departmentFilter={departmentFilter}
+            departmentOptions={departmentOptions}
             sortFilter={sortFilter}
             query={query}
             onTypeChange={(value) => updateParam("type", value)}
+            onDepartmentChange={(value) => updateParam("department", value)}
             onSortChange={(value) => updateParam("sort", value)}
             onQueryChange={(value) => updateParam("q", value)}
           />
