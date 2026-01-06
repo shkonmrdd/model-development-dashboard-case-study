@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 
 import { DashboardShell } from "@/components/dashboard-shell";
 import { DataTablesPanel } from "@/components/dashboard/DataTablesPanel";
+import { GovernancePanel } from "@/components/dashboard/GovernancePanel";
 import { ProjectHeader } from "@/components/dashboard/ProjectHeader";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -66,29 +67,7 @@ export default function ProjectOverviewPage() {
               className="space-y-6 lg:col-span-4"
               aria-label="Governance and lineage"
             >
-              <Card id="governance">
-                <CardHeader>
-                  <h2 className="text-base font-semibold">Governance</h2>
-                </CardHeader>
-                <CardContent className="space-y-5">
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium">Pending Approvals</p>
-                    <Skeleton className="h-4 w-2/3" />
-                    <Skeleton className="h-4 w-1/2" />
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium">Compliance Checklist</p>
-                    <Skeleton className="h-4 w-3/4" />
-                    <Skeleton className="h-2 w-full" />
-                    <Skeleton className="h-4 w-1/2" />
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium">Stakeholders</p>
-                    <Skeleton className="h-4 w-2/3" />
-                    <Skeleton className="h-4 w-1/2" />
-                  </div>
-                </CardContent>
-              </Card>
+              <GovernancePanel projectId={projectId} />
 
               <Card id="lineage">
                 <CardHeader>

@@ -2,6 +2,7 @@
 
 import { IconAlertTriangle } from "@tabler/icons-react";
 
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -10,6 +11,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useProjectGovernance } from "@/lib/api/queries";
 
 const listSkeletons = Array.from({ length: 3 });
+
+const getInitials = (name: string) =>
+  name
+    .split(" ")
+    .map((part) => part[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 
 export function GovernancePanel({ projectId }: { projectId: string }) {
   const { data, isLoading, error, refetch } = useProjectGovernance(projectId);
@@ -119,18 +129,32 @@ export function GovernancePanel({ projectId }: { projectId: string }) {
                   No stakeholders assigned.
                 </p>
               ) : (
-                <div className="space-y-2">
-                  {data.stakeholders.map((stakeholder) => (
-                    <div
-                      key={stakeholder.user_id}
-                      className="flex items-center justify-between rounded-md border bg-background px-3 py-2 text-sm"
-                    >
-                      <span>{stakeholder.name}</span>
-                      <Badge variant="outline" className="rounded-full">
-                        {stakeholder.role}
-                      </Badge>
-                    </div>
-                  ))}
+                <div className="overflow-hidden rounded-md bg-muted/20">
+                  <div className="divide-y divide-muted-foreground/10">
+                    {data.stakeholders.map((stakeholder) => (
+                      <div
+                        key={stakeholder.user_id}
+                        className="flex items-center justify-between px-3 py-2 text-sm"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Avatar className="size-7">
+                            <AvatarFallback className="text-[10px] font-medium text-muted-foreground">
+                              {getInitials(stakeholder.name)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span className="font-medium">
+                            {stakeholder.name}
+                          </span>
+                        </div>
+                        <Badge
+                          variant="secondary"
+                          className="rounded-full text-xs"
+                        >
+                          {stakeholder.role}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>

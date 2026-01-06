@@ -112,30 +112,32 @@ function TableHeaderRow() {
 
 function ColumnsList({ columns }: { columns: ProjectTable["columns"] }) {
   return (
-    <div className="grid gap-2">
-      {columns.map((column) => (
-        <div
-          key={column.column_id}
-          className="grid grid-cols-12 items-center gap-3 rounded-md bg-background/80 px-3 py-2 text-sm"
-        >
-          <div className="col-span-5">
-            <div className="font-medium text-foreground">
-              {column.display_name}
+    <div className="overflow-hidden rounded-md bg-background/80">
+      <div className="divide-y divide-muted-foreground/10">
+        {columns.map((column) => (
+          <div
+            key={column.column_id}
+            className="grid grid-cols-12 items-center gap-3 px-3 py-2 text-sm"
+          >
+            <div className="col-span-5">
+              <div className="font-medium text-foreground">
+                {column.display_name}
+              </div>
+              <div className="text-xs text-muted-foreground">
+                {column.column_name}
+              </div>
             </div>
-            <div className="text-xs text-muted-foreground">
-              {column.column_name}
+            <div className="col-span-3 text-xs text-muted-foreground">
+              {column.data_type}
+            </div>
+            <div className="col-span-4">
+              <Badge className={`rounded-full ${roleStyles[column.role]}`}>
+                {column.role}
+              </Badge>
             </div>
           </div>
-          <div className="col-span-3 text-xs text-muted-foreground">
-            {column.data_type}
-          </div>
-          <div className="col-span-4">
-            <Badge className={`rounded-full ${roleStyles[column.role]}`}>
-              {column.role}
-            </Badge>
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }
@@ -148,47 +150,47 @@ function VersionsList({
   currentVersionId: string;
 }) {
   return (
-    <div className="space-y-2">
-      {versions.map((version) => {
-        const isCurrent = version.table_version_id === currentVersionId;
-        const checkpointLabel = getCheckpointLabel(version.checkpoint_type);
+    <div className="overflow-hidden rounded-md bg-background/80">
+      <div className="divide-y divide-muted-foreground/10">
+        {versions.map((version) => {
+          const isCurrent = version.table_version_id === currentVersionId;
+          const checkpointLabel = getCheckpointLabel(version.checkpoint_type);
 
-        return (
-          <div
-            key={version.table_version_id}
-            className={`grid grid-cols-12 items-center gap-3 rounded-md border px-3 py-2 text-sm ${
-              isCurrent
-                ? "border-emerald-200 bg-emerald-50/70"
-                : "border-transparent bg-background/80"
-            }`}
-          >
-            <div className="col-span-2 font-medium">
-              v{version.version_number}
-              {isCurrent ? (
-                <Badge className="ml-2 rounded-full border-transparent bg-emerald-600 text-white">
-                  Current
-                </Badge>
-              ) : null}
+          return (
+            <div
+              key={version.table_version_id}
+              className={`grid grid-cols-12 items-center gap-3 px-3 py-2 text-sm ${
+                isCurrent ? "bg-emerald-50/70" : ""
+              }`}
+            >
+              <div className="col-span-2 font-medium">
+                v{version.version_number}
+                {isCurrent ? (
+                  <Badge className="ml-2 rounded-full border-transparent bg-emerald-600 text-white">
+                    Current
+                  </Badge>
+                ) : null}
+              </div>
+              <div className="col-span-2 text-muted-foreground">
+                {version.row_count.toLocaleString()} rows
+              </div>
+              <div className="col-span-2 text-muted-foreground">
+                {version.column_count} cols
+              </div>
+              <div className="col-span-2 text-muted-foreground">
+                {version.is_materialized ? "Materialized" : "Virtual"}
+              </div>
+              <div className="col-span-2 text-muted-foreground">
+                {checkpointLabel ?? "—"}
+              </div>
+              <div className="col-span-2 text-xs text-muted-foreground">
+                <div>{format(new Date(version.created_at), "PP")}</div>
+                <div>{version.created_by}</div>
+              </div>
             </div>
-            <div className="col-span-2 text-muted-foreground">
-              {version.row_count.toLocaleString()} rows
-            </div>
-            <div className="col-span-2 text-muted-foreground">
-              {version.column_count} cols
-            </div>
-            <div className="col-span-2 text-muted-foreground">
-              {version.is_materialized ? "Materialized" : "Virtual"}
-            </div>
-            <div className="col-span-2 text-muted-foreground">
-              {checkpointLabel ?? "—"}
-            </div>
-            <div className="col-span-2 text-xs text-muted-foreground">
-              <div>{format(new Date(version.created_at), "PP")}</div>
-              <div>{version.created_by}</div>
-            </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }
