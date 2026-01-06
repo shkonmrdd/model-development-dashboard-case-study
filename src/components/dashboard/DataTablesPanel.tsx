@@ -59,7 +59,7 @@ const getCheckpointLabel = (checkpointType?: string | null) =>
 
 function TableHeaderRow() {
   return (
-    <div className="grid grid-cols-12 gap-3 text-xs font-medium uppercase text-muted-foreground">
+    <div className="grid grid-cols-12 gap-1 pl-2 pr-8 text-xs font-medium uppercase text-muted-foreground">
       <span className="col-span-4">Table</span>
       <span className="col-span-2">Type</span>
       <span className="col-span-2">Version</span>
@@ -202,7 +202,7 @@ function TableAccordion({ tables }: { tables: ProjectTable[] }) {
                   <div className="col-span-2 text-sm text-muted-foreground">
                     {checkpointLabel ? (
                       <span className="inline-flex items-center gap-1 text-emerald-700">
-                        <IconCircleCheck className="h-4 w-4" />
+                        <IconCircleCheck className="h-4 w-4 min-w-4" />
                         {checkpointLabel}
                       </span>
                     ) : (
