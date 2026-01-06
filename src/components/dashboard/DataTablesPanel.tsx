@@ -170,7 +170,7 @@ function TableAccordion({ tables }: { tables: ProjectTable[] }) {
               key={table.project_table_id}
               value={table.project_table_id}
             >
-              <AccordionTrigger className="rounded-md px-2 py-3 hover:bg-muted/30 hover:no-underline">
+              <AccordionTrigger className="cursor-pointer rounded-md px-2 py-3 hover:bg-muted/30 hover:no-underline">
                 <div className="grid w-full grid-cols-12 items-center gap-3 text-sm">
                   <div className="col-span-4">
                     <div className="font-medium text-foreground">
