@@ -95,7 +95,7 @@ export function LineagePanel({ projectId }: { projectId: string }) {
   };
 
   return (
-    <Card id="lineage">
+    <Card id="lineage" className="gap-1">
       <CardHeader>
         <div className="flex items-center gap-2">
           <Merge className="h-5 w-5 text-primary" />
