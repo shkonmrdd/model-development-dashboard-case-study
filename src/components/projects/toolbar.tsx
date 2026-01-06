@@ -1,8 +1,9 @@
 "use client";
 
-import { IconSearch } from "@tabler/icons-react";
+import { IconSearch, IconX } from "@tabler/icons-react";
 
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -28,10 +29,12 @@ type ProjectToolbarProps = {
   departmentOptions: string[];
   sortFilter: SortOption;
   query: string;
+  hasFilters: boolean;
   onTypeChange: (value: string) => void;
   onDepartmentChange: (value: string) => void;
   onSortChange: (value: string) => void;
   onQueryChange: (value: string) => void;
+  onClearFilters: () => void;
 };
 
 export function ProjectToolbar({
@@ -40,10 +43,12 @@ export function ProjectToolbar({
   departmentOptions,
   sortFilter,
   query,
+  hasFilters,
   onTypeChange,
   onDepartmentChange,
   onSortChange,
   onQueryChange,
+  onClearFilters,
 }: ProjectToolbarProps) {
   return (
     <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -90,14 +95,27 @@ export function ProjectToolbar({
         </Select>
       </div>
 
-      <div className="relative w-full md:max-w-sm">
-        <IconSearch className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          value={query}
-          onChange={(event) => onQueryChange(event.target.value)}
-          placeholder={searchPlaceholder}
-          className="h-9 pl-9"
-        />
+      <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:justify-end md:max-w-lg">
+        <div className="relative w-full sm:max-w-sm">
+          <IconSearch className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={query}
+            onChange={(event) => onQueryChange(event.target.value)}
+            placeholder={searchPlaceholder}
+            className="h-9 pl-9"
+          />
+        </div>
+        {hasFilters ? (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClearFilters}
+            className="h-9 gap-2 self-start sm:self-auto"
+          >
+            <IconX className="h-4 w-4" />
+            Clear
+          </Button>
+        ) : null}
       </div>
     </div>
   );

@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo } from "react";
-
 import { DashboardShell } from "@/components/dashboard-shell";
 import { ProjectListHeader } from "@/components/projects/list-header";
 import { ProjectListStates } from "@/components/projects/list-states";
@@ -102,8 +101,6 @@ export default function Home() {
       <div className="px-4 lg:px-6">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-4">
           <ProjectListHeader
-            hasFilters={hasFilters}
-            onClearFilters={clearFilters}
           />
 
           <ProjectStatusTabs
@@ -119,10 +116,12 @@ export default function Home() {
             departmentOptions={departmentOptions}
             sortFilter={sortFilter}
             query={query}
+            hasFilters={hasFilters}
             onTypeChange={(value) => updateParam("type", value)}
             onDepartmentChange={(value) => updateParam("department", value)}
             onSortChange={(value) => updateParam("sort", value)}
             onQueryChange={(value) => updateParam("q", value)}
+            onClearFilters={clearFilters}
           />
 
           <ProjectListStates
