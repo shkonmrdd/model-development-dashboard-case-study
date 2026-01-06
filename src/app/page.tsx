@@ -1,22 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useQuery } from "@tanstack/react-query";
-import type { Project } from "@/lib/types";
-
-const fetchProjects = async (): Promise<Project[]> => {
-  const response = await fetch("/api/projects");
-  if (!response.ok) {
-    throw new Error(`Request failed (${response.status})`);
-  }
-  return (await response.json()) as Project[];
-};
+import { useProjects } from "@/lib/api/queries";
 
 export default function Home() {
-  const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["projects"],
-    queryFn: fetchProjects,
-  });
+  const { data, isLoading, error, refetch } = useProjects();
 
   return (
     <div className="min-h-screen p-6">
