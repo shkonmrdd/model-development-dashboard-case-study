@@ -200,8 +200,7 @@ export function OperationsPanel({
               Recent operations
             </CardTitle>
             <CardDescription className="mt-1">
-              Latest transformations and actions for this project, with
-              traceable inputs and outputs.
+              Latest transformations and actions for this project.
             </CardDescription>
             <div className="mt-3 flex flex-wrap items-center gap-2">
               {filterOptions.map((option) => (
