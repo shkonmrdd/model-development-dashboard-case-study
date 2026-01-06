@@ -1,15 +1,10 @@
 "use client";
 
-import { IconAlertTriangle } from "@tabler/icons-react";
-
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useProjectGovernance } from "@/lib/api/queries";
-
-const listSkeletons = Array.from({ length: 3 });
+import { PanelEmpty, PanelError, PanelSkeleton } from "./PanelStates";
 
 export function GovernancePanel({ projectId }: { projectId: string }) {
   const { data, isLoading, error, refetch } = useProjectGovernance(projectId);
@@ -20,34 +15,14 @@ export function GovernancePanel({ projectId }: { projectId: string }) {
         <h2 className="text-base font-semibold">Governance</h2>
       </CardHeader>
       <CardContent className="space-y-6">
-        {isLoading && (
-          <div className="space-y-4">
-            {listSkeletons.map((_, index) => (
-              <Skeleton key={`gov-skeleton-${index}`} className="h-4 w-full" />
-            ))}
-            <Skeleton className="h-2 w-full" />
-            <Skeleton className="h-4 w-2/3" />
-          </div>
-        )}
+        {isLoading && <PanelSkeleton rows={5} />}
 
         {error && (
-          <div className="rounded-lg border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
-            <div className="flex items-center gap-2 font-medium">
-              <IconAlertTriangle className="h-4 w-4" />
-              Unable to load governance data.
-            </div>
-            <p className="text-muted-foreground">
-              {error instanceof Error ? error.message : "Unknown error"}
-            </p>
-            <Button
-              variant="outline"
-              size="sm"
-              className="mt-3"
-              onClick={() => refetch()}
-            >
-              Retry
-            </Button>
-          </div>
+          <PanelError
+            title="Unable to load governance data."
+            error={error}
+            onRetry={refetch}
+          />
         )}
 
         {data && !isLoading && (
@@ -56,9 +31,7 @@ export function GovernancePanel({ projectId }: { projectId: string }) {
               <p className="text-sm font-medium">Pending Approvals</p>
               {data.approvals.filter((approval) => approval.status === "Pending")
                 .length === 0 ? (
-                <p className="text-sm text-muted-foreground">
-                  No pending approvals.
-                </p>
+                <PanelEmpty message="No pending approvals." />
               ) : (
                 <div className="space-y-2">
                   {data.approvals
@@ -106,18 +79,14 @@ export function GovernancePanel({ projectId }: { projectId: string }) {
                   </p>
                 </div>
               ) : (
-                <p className="text-sm text-muted-foreground">
-                  No compliance checklist assigned.
-                </p>
+                <PanelEmpty message="No compliance checklist assigned." />
               )}
             </div>
 
             <div className="space-y-2">
               <p className="text-sm font-medium">Stakeholders</p>
               {data.stakeholders.length === 0 ? (
-                <p className="text-sm text-muted-foreground">
-                  No stakeholders assigned.
-                </p>
+                <PanelEmpty message="No stakeholders assigned." />
               ) : (
                 <div className="overflow-hidden rounded-md bg-muted/20">
                   <div className="divide-y divide-muted-foreground/10">

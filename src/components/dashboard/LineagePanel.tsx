@@ -1,14 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { IconAlertTriangle } from "@tabler/icons-react";
-
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { useProjectLineage, useProjectTables } from "@/lib/api/queries";
 import type { TableLineageEdge } from "@/lib/types";
+import { PanelEmpty, PanelError, PanelSkeleton } from "./PanelStates";
 
 const rowHeight = 44;
 const listSkeletons = Array.from({ length: 4 });
@@ -102,38 +100,24 @@ export function LineagePanel({ projectId }: { projectId: string }) {
       </CardHeader>
       <CardContent className="space-y-4">
         {(tablesLoading || edgesLoading) && (
-          <div className="space-y-3">
+          <PanelSkeleton>
             {listSkeletons.map((_, index) => (
               <Skeleton key={`lineage-skeleton-${index}`} className="h-8 w-full" />
             ))}
             <Skeleton className="h-24 w-full" />
-          </div>
+          </PanelSkeleton>
         )}
 
         {error && (
-          <div className="rounded-lg border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
-            <div className="flex items-center gap-2 font-medium">
-              <IconAlertTriangle className="h-4 w-4" />
-              Unable to load lineage.
-            </div>
-            <p className="text-muted-foreground">
-              {error instanceof Error ? error.message : "Unknown error"}
-            </p>
-            <Button
-              variant="outline"
-              size="sm"
-              className="mt-3"
-              onClick={() => refetch()}
-            >
-              Retry
-            </Button>
-          </div>
+          <PanelError
+            title="Unable to load lineage."
+            error={error}
+            onRetry={refetch}
+          />
         )}
 
         {!edgesLoading && !tablesLoading && edges && edges.length === 0 && (
-          <div className="rounded-lg border bg-muted/30 p-4 text-sm text-muted-foreground">
-            No lineage defined for this project.
-          </div>
+          <PanelEmpty message="No lineage defined for this project." />
         )}
 
         {!edgesLoading && !tablesLoading && edges && edges.length > 0 && (

@@ -1,6 +1,6 @@
 "use client";
 
-import { IconCircleCheck, IconAlertTriangle } from "@tabler/icons-react";
+import { IconCircleCheck } from "@tabler/icons-react";
 import { format } from "date-fns";
 
 import {
@@ -10,12 +10,12 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useProjectTables } from "@/lib/api/queries";
 import type { ColumnRole, ProjectTable, TableVersion } from "@/lib/types";
+import { PanelEmpty, PanelError, PanelSkeleton } from "./PanelStates";
 
 const rowSkeletons = Array.from({ length: 4 });
 
@@ -47,56 +47,6 @@ const getCurrentVersion = (table: ProjectTable): TableVersion | undefined =>
 
 const getCheckpointLabel = (checkpointType?: string | null) =>
   checkpointType ? checkpointLabels[checkpointType] : null;
-
-function TablesSkeleton() {
-  return (
-    <div className="space-y-3">
-      {rowSkeletons.map((_, index) => (
-        <div
-          key={`table-row-skeleton-${index}`}
-          className="grid grid-cols-12 items-center gap-3"
-        >
-          <Skeleton className="col-span-4 h-4" />
-          <Skeleton className="col-span-2 h-4" />
-          <Skeleton className="col-span-2 h-4" />
-          <Skeleton className="col-span-2 h-4" />
-          <Skeleton className="col-span-2 h-4" />
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function TablesError({
-  error,
-  onRetry,
-}: {
-  error: unknown;
-  onRetry: () => void;
-}) {
-  return (
-    <div className="rounded-lg border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
-      <div className="flex items-center gap-2 font-medium">
-        <IconAlertTriangle className="h-4 w-4" />
-        Unable to load tables.
-      </div>
-      <p className="text-muted-foreground">
-        {error instanceof Error ? error.message : "Unknown error"}
-      </p>
-      <Button variant="outline" size="sm" className="mt-3" onClick={onRetry}>
-        Retry
-      </Button>
-    </div>
-  );
-}
-
-function TablesEmpty() {
-  return (
-    <div className="rounded-lg border bg-muted/30 p-4 text-sm text-muted-foreground">
-      No tables are available for this project yet.
-    </div>
-  );
-}
 
 function TableHeaderRow() {
   return (
@@ -293,9 +243,32 @@ export function DataTablesPanel({ projectId }: { projectId: string }) {
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        {isLoading && <TablesSkeleton />}
-        {error && <TablesError error={error} onRetry={refetch} />}
-        {data && data.length === 0 && !isLoading && <TablesEmpty />}
+        {isLoading && (
+          <PanelSkeleton>
+            {rowSkeletons.map((_, index) => (
+              <div
+                key={`table-row-skeleton-${index}`}
+                className="grid grid-cols-12 items-center gap-3"
+              >
+                <Skeleton className="col-span-4 h-4" />
+                <Skeleton className="col-span-2 h-4" />
+                <Skeleton className="col-span-2 h-4" />
+                <Skeleton className="col-span-2 h-4" />
+                <Skeleton className="col-span-2 h-4" />
+              </div>
+            ))}
+          </PanelSkeleton>
+        )}
+        {error && (
+          <PanelError
+            title="Unable to load tables."
+            error={error}
+            onRetry={refetch}
+          />
+        )}
+        {data && data.length === 0 && !isLoading && (
+          <PanelEmpty message="No tables are available for this project yet." />
+        )}
         {data && data.length > 0 && <TableAccordion tables={data} />}
       </CardContent>
     </Card>

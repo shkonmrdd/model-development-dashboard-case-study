@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { IconAlertTriangle } from "@tabler/icons-react";
 import {
   Binary,
   Columns3,
@@ -28,6 +27,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { useProjectOperations } from "@/lib/api/queries";
 import type { OperationLog } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { PanelEmpty, PanelError, PanelSkeleton } from "./PanelStates";
 
 const listSkeletons = Array.from({ length: 4 });
 
@@ -216,7 +216,7 @@ export function OperationsPanel({
 
       <CardContent className="relative space-y-4">
         {isLoading && (
-          <div className="space-y-3">
+          <PanelSkeleton>
             {listSkeletons.map((_, index) => (
               <div
                 key={`op-skeleton-${index}`}
@@ -238,40 +238,27 @@ export function OperationsPanel({
                 </div>
               </div>
             ))}
-          </div>
+          </PanelSkeleton>
         )}
 
         {error && !isLoading && (
-          <div className="rounded-lg border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
-            <div className="flex items-center gap-2 font-medium">
-              <IconAlertTriangle className="h-4 w-4" />
-              Unable to load operations.
-            </div>
-            <p className="text-muted-foreground">
-              {error instanceof Error ? error.message : "Unknown error"}
-            </p>
-            <Button
-              variant="outline"
-              size="sm"
-              className="mt-3"
-              onClick={() => refetch()}
-            >
-              Retry
-            </Button>
-          </div>
+          <PanelError
+            title="Unable to load operations."
+            error={error}
+            onRetry={refetch}
+          />
         )}
 
         {!isLoading && !error && operations.length === 0 && (
-          <div className="rounded-lg border bg-muted/30 p-4 text-sm text-muted-foreground">
-            No recent operations recorded for this project.
-          </div>
+          <PanelEmpty message="No recent operations recorded for this project." />
         )}
 
-        {!isLoading && !error && operations.length > 0 && filteredOperations.length === 0 && (
-          <div className="rounded-lg border bg-muted/30 p-4 text-sm text-muted-foreground">
-            No operations match this filter.
-          </div>
-        )}
+        {!isLoading &&
+          !error &&
+          operations.length > 0 &&
+          filteredOperations.length === 0 && (
+            <PanelEmpty message="No operations match this filter." />
+          )}
 
         {!isLoading && !error && filteredOperations.length > 0 && (
           <div className="space-y-8">
