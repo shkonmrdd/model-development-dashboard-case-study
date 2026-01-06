@@ -163,18 +163,20 @@ export function GovernancePanel({ projectId }: { projectId: string }) {
                           {checklist.status}
                         </Badge>
                       </div>
-                      <div className="mt-1 text-xs text-muted-foreground">
-                        Assigned to:{" "}
-                        <span className="text-foreground/80">
-                          {checklist.assigned_to?.name ?? "—"}
-                        </span>
+                      <div className="mt-1 space-y-1 text-xs text-muted-foreground">
+                        <div>
+                          Assigned to:{" "}
+                          <span className="text-foreground/80">
+                            {checklist.assigned_to?.name ?? "—"}
+                          </span>
+                        </div>
                         {checklist.completed_at ? (
-                          <>
-                            {" "}• Completed:{" "}
+                          <div>
+                            Completed:{" "}
                             <span className="font-mono">
                               {formatWhen(checklist.completed_at)}
                             </span>
-                          </>
+                          </div>
                         ) : null}
                       </div>
                     </div>
