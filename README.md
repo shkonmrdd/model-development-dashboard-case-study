@@ -39,4 +39,3 @@ This dashboard uses Mock Service Worker to intercept `/api/*` requests in the br
 2. Run the dev server and open the app.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-

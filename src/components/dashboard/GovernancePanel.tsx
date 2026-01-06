@@ -2,7 +2,6 @@
 
 import { IconAlertTriangle } from "@tabler/icons-react";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -11,15 +10,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useProjectGovernance } from "@/lib/api/queries";
 
 const listSkeletons = Array.from({ length: 3 });
-
-const getInitials = (name: string) =>
-  name
-    .split(" ")
-    .map((part) => part[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
 
 export function GovernancePanel({ projectId }: { projectId: string }) {
   const { data, isLoading, error, refetch } = useProjectGovernance(projectId);
@@ -136,16 +126,7 @@ export function GovernancePanel({ projectId }: { projectId: string }) {
                         key={stakeholder.user_id}
                         className="flex items-center justify-between px-3 py-2 text-sm"
                       >
-                        <div className="flex items-center gap-2">
-                          <Avatar className="size-7">
-                            <AvatarFallback className="text-[10px] font-medium text-muted-foreground">
-                              {getInitials(stakeholder.name)}
-                            </AvatarFallback>
-                          </Avatar>
-                          <span className="font-medium">
-                            {stakeholder.name}
-                          </span>
-                        </div>
+                        <span className="font-medium">{stakeholder.name}</span>
                         <Badge
                           variant="secondary"
                           className="rounded-full text-xs"

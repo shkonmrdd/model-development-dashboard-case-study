@@ -5,7 +5,6 @@ import { IconAlertTriangle } from "@tabler/icons-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useProject } from "@/lib/api/queries";
 import type { ProjectStatus } from "@/lib/types";
@@ -33,46 +32,60 @@ const statusStyles: Record<ProjectStatus, { badge: string; dot: string }> = {
   },
 };
 
-const detailSkeletons = Array.from({ length: 4 });
 
 export function ProjectHeader({ projectId }: { projectId: string }) {
   const { data, isLoading, error, refetch } = useProject(projectId);
+  const containerClassName = "flex flex-col gap-4";
 
   if (isLoading) {
     return (
-      <Card>
-        <CardHeader className="gap-4">
-          <div className="flex flex-wrap items-center gap-3">
-            <Skeleton className="h-8 w-64" />
-            <Skeleton className="h-5 w-24 rounded-full" />
-            <Skeleton className="h-5 w-24 rounded-full" />
-          </div>
-          <div className="grid gap-3 md:grid-cols-2">
-            {detailSkeletons.map((_, index) => (
-              <Skeleton key={`project-detail-${index}`} className="h-4 w-48" />
+      <section className={containerClassName} aria-label="Project header">
+        <div className="flex flex-wrap items-center gap-3">
+          <Skeleton className="h-8 w-64" />
+          <Skeleton className="h-5 w-24 rounded-full" />
+          <Skeleton className="h-5 w-24 rounded-full" />
+        </div>
+        <div className="flex items-start justify-between gap-6">
+          <div className="flex flex-wrap items-start gap-6">
+            {Array.from({ length: 2 }).map((_, index) => (
+              <div key={`project-owner-${index}`} className="space-y-2">
+                <Skeleton className="h-3 w-20" />
+                <Skeleton className="h-4 w-40" />
+              </div>
             ))}
           </div>
-        </CardHeader>
-      </Card>
+          <div className="flex flex-col items-end gap-1">
+            <Skeleton className="h-3 w-16" />
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-3 w-16" />
+            <Skeleton className="h-4 w-24" />
+          </div>
+        </div>
+      </section>
     );
   }
 
   if (error || !data) {
     return (
-      <Card>
-        <CardContent className="flex flex-col gap-3 py-6 text-sm">
+      <section className={containerClassName} aria-label="Project header">
+        <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-sm">
           <div className="flex items-center gap-2 font-medium text-destructive">
             <IconAlertTriangle className="h-4 w-4" />
             Unable to load project header.
           </div>
-          <p className="text-muted-foreground">
+          <p className="mt-1 text-muted-foreground">
             {error instanceof Error ? error.message : "Unknown error"}
           </p>
-          <Button variant="outline" size="sm" onClick={() => refetch()}>
+          <Button
+            variant="outline"
+            size="sm"
+            className="mt-3"
+            onClick={() => refetch()}
+          >
             Retry
           </Button>
-        </CardContent>
-      </Card>
+        </div>
+      </section>
     );
   }
 
@@ -80,58 +93,80 @@ export function ProjectHeader({ projectId }: { projectId: string }) {
   const updatedAt = new Date(data.updated_at);
 
   return (
-    <Card>
-      <CardHeader className="gap-4">
-        <div className="flex flex-wrap items-center gap-3">
-          <h2 className="text-2xl font-semibold">{data.project_name}</h2>
+    <section className={containerClassName} aria-label="Project header">
+      <div className="flex flex-wrap items-center gap-3">
+        <h2 className="text-3xl font-semibold tracking-tight">
+          {data.project_name}
+        </h2>
+        <Badge
+          variant="outline"
+          className={`gap-2 rounded-full ${statusStyles[data.status].badge}`}
+        >
+          <span
+            className={`h-2 w-2 rounded-full ${statusStyles[data.status].dot}`}
+            aria-hidden="true"
+          />
+          {data.status}
+        </Badge>
+        <Badge variant="outline" className="rounded-full">
+          {data.project_type}
+        </Badge>
+        {data.department ? (
           <Badge variant="outline" className="rounded-full">
-            {data.project_type}
+            {data.department.name}
           </Badge>
-          <Badge
-            variant="outline"
-            className={`gap-2 rounded-full ${statusStyles[data.status].badge}`}
-          >
-            <span
-              className={`h-2 w-2 rounded-full ${statusStyles[data.status].dot}`}
-              aria-hidden="true"
-            />
-            {data.status}
-          </Badge>
-          {data.department ? (
-            <Badge variant="outline" className="rounded-full">
-              {data.department.name}
-            </Badge>
+        ) : null}
+      </div>
+      <div className="flex flex-wrap items-start justify-between gap-6 mt-4">
+        <dl className="flex flex-wrap items-start gap-6 text-sm">
+          <div className="space-y-1">
+            <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Owner
+            </dt>
+            <dd className="flex flex-wrap items-center gap-2 text-sm font-medium text-foreground">
+              <span>{data.owner?.name ?? "Unassigned"}</span>
+              {data.owner?.title ? (
+                <Badge variant="secondary" className="rounded-full text-xs">
+                  {data.owner.title}
+                </Badge>
+              ) : null}
+            </dd>
+          </div>
+          {data.governance_manager?.name ? (
+            <div className="space-y-1">
+              <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Governance manager
+              </dt>
+              <dd className="flex flex-wrap items-center gap-2 text-sm font-medium text-foreground">
+                <span>{data.governance_manager.name}</span>
+                {data.governance_manager.title ? (
+                  <Badge variant="secondary" className="rounded-full text-xs">
+                    {data.governance_manager.title}
+                  </Badge>
+                ) : null}
+              </dd>
+            </div>
           ) : null}
-        </div>
-        <div className="grid gap-3 text-sm text-muted-foreground md:grid-cols-2">
-          <div className="space-y-2">
-            <div>
-              <span className="font-medium text-foreground">Owner:</span>{" "}
-              {data.owner?.name ?? "Unassigned"}
-            </div>
-            <div>
-              <span className="font-medium text-foreground">
-                Governance manager:
-              </span>{" "}
-              {data.governance_manager?.name ?? "Unassigned"}
-            </div>
+        </dl>
+        <dl className="flex flex-wrap items-start gap-6 text-right text-sm">
+          <div className="space-y-1">
+            <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Created
+            </dt>
+            <dd className="text-sm font-medium text-foreground">
+              <time dateTime={data.created_at}>{format(createdAt, "PP")}</time>
+            </dd>
           </div>
-          <div className="space-y-2">
-            <div>
-              <span className="font-medium text-foreground">Created:</span>{" "}
-              <time dateTime={data.created_at}>
-                {format(createdAt, "PPp")}
-              </time>
-            </div>
-            <div>
-              <span className="font-medium text-foreground">Updated:</span>{" "}
-              <time dateTime={data.updated_at}>
-                {format(updatedAt, "PPp")}
-              </time>
-            </div>
+          <div className="space-y-1">
+            <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Updated
+            </dt>
+            <dd className="text-sm font-medium text-foreground">
+              <time dateTime={data.updated_at}>{format(updatedAt, "PP")}</time>
+            </dd>
           </div>
-        </div>
-      </CardHeader>
-    </Card>
+        </dl>
+      </div>
+    </section>
   );
 }

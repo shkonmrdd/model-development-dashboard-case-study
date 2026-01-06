@@ -8,28 +8,24 @@ import { GovernancePanel } from "@/components/dashboard/GovernancePanel";
 import { ProjectHeader } from "@/components/dashboard/ProjectHeader";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useProject } from "@/lib/api/queries";
 
 export default function ProjectOverviewPage() {
   const params = useParams();
   const projectId =
     typeof params?.projectId === "string" ? params.projectId : "";
+  const { data: project } = useProject(projectId);
+  const breadcrumbLabel = project?.project_name || projectId || "Project";
 
   return (
     <DashboardShell
       breadcrumbs={[
         { label: "Projects", href: "/" },
-        { label: projectId || "Project" },
+        { label: breadcrumbLabel },
       ]}
     >
       <div className="px-4 lg:px-6">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
-          <section className="flex flex-col gap-1">
-            <h1 className="text-2xl font-semibold">Project Overview</h1>
-            <p className="text-sm text-muted-foreground">
-              Track tables, operations, governance, and lineage at a glance.
-            </p>
-          </section>
-
           <ProjectHeader projectId={projectId} />
 
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
