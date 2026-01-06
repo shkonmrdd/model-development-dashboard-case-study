@@ -87,7 +87,7 @@ export function SectionCards({ cards, isLoading }: SectionCardsProps) {
           <Card
             key={card.title}
             className={cn(
-              "@container/card relative overflow-hidden border bg-gradient-to-br",
+              "@container/card relative overflow-hidden border bg-linear-to-br",
               tone?.card ?? "from-muted/40 via-white to-white"
             )}
           >

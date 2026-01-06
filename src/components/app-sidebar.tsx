@@ -37,7 +37,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenuButton
               asChild
               size="lg"
-              className="data-[slot=sidebar-menu-button]:!p-2"
+              className="data-[slot=sidebar-menu-button]:p-2!"
             >
               <Link href="/" aria-label="Model Dashboard home">
                 <div className="flex size-9 items-center justify-center rounded-md bg-muted/40 text-muted-foreground">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, type ComponentProps } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { format, formatDistanceToNow } from "date-fns";
 import {
@@ -62,8 +62,7 @@ export default function Home() {
   const query = searchParams.get("q") ?? "";
   const statusFilter = searchParams.get("status") ?? "all";
   const typeFilter = searchParams.get("type") ?? "all";
-  const sortFilter = (searchParams.get("sort") ??
-    "updated_desc") as SortOption;
+  const sortFilter = (searchParams.get("sort") ?? "updated_desc") as SortOption;
 
   const updateParam = useCallback(
     (key: string, value: string) => {
@@ -100,7 +99,7 @@ export default function Home() {
     return totals;
   }, [data]);
 
-  const summaryCards = useMemo(() => {
+  const summaryCards = useMemo<ComponentProps<typeof SectionCards>["cards"]>(() => {
     if (!data) return [];
 
     return [
@@ -112,7 +111,8 @@ export default function Home() {
         badge: {
           label: "Portfolio",
           icon: IconFolder,
-          className: "border-muted-foreground/30 bg-muted text-muted-foreground",
+          className:
+            "border-muted-foreground/30 bg-muted text-muted-foreground",
         },
       },
       {
@@ -209,7 +209,7 @@ export default function Home() {
 
           <section className="flex flex-wrap items-end justify-between gap-4">
             <div className="flex flex-wrap items-end gap-3">
-              <div className="min-w-[160px]">
+              <div className="min-w-40">
                 <label
                   htmlFor="status-filter"
                   className="text-xs font-medium text-muted-foreground"
@@ -231,7 +231,7 @@ export default function Home() {
                 </select>
               </div>
 
-              <div className="min-w-[160px]">
+              <div className="min-w-40">
                 <label
                   htmlFor="type-filter"
                   className="text-xs font-medium text-muted-foreground"
@@ -253,7 +253,7 @@ export default function Home() {
                 </select>
               </div>
 
-              <div className="min-w-[180px]">
+              <div className="min-w-45">
                 <label
                   htmlFor="sort-filter"
                   className="text-xs font-medium text-muted-foreground"
@@ -357,9 +357,7 @@ export default function Home() {
 
           {data && data.length > 0 && filteredProjects.length === 0 && (
             <div className="rounded-lg border bg-background p-6 text-sm text-muted-foreground">
-              {hasFilters
-                ? "No projects match filters."
-                : "No projects found."}
+              {hasFilters ? "No projects match filters." : "No projects found."}
             </div>
           )}
 

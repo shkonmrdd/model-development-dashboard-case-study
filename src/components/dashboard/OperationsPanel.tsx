@@ -315,7 +315,7 @@ function OperationRow({
     <div
       className={cn(
         "group rounded-xl border bg-background/80 p-3 shadow-sm transition",
-        "hover:-translate-y-[1px] hover:shadow-md"
+        "hover:-translate-y-px hover:shadow-md"
       )}
     >
       <div className="flex items-start gap-3">
