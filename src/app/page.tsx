@@ -82,8 +82,6 @@ export default function Home() {
       <div className="px-4 lg:px-6">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-4">
           <ProjectListHeader
-            totalCount={data?.length}
-            filteredCount={filteredProjects.length}
             hasFilters={hasFilters}
             onClearFilters={clearFilters}
           />
