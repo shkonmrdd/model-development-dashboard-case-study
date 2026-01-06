@@ -43,6 +43,20 @@ function formatWhen(iso: string) {
   }).format(date);
 }
 
+function formatDateLabel(date: Date) {
+  return new Intl.DateTimeFormat(undefined, {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  }).format(date);
+}
+
+function getLocalDateKey(date: Date) {
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, "0");
+  const day = `${date.getDate()}`.padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
 
 function opIcon(op: OperationLog) {
   const name = op.operation_name.toLowerCase();
@@ -123,6 +137,29 @@ export function OperationsPanel({
     () => (showAll ? filteredOperations : filteredOperations.slice(0, MAX_VISIBLE)),
     [filteredOperations, showAll]
   );
+  const groupedOperations = React.useMemo(() => {
+    const groups: Array<{
+      key: string;
+      label: string;
+      items: OperationLog[];
+    }> = [];
+
+    visibleOperations.forEach((operation) => {
+      const date = new Date(operation.execution_timestamp);
+      const isValid = !Number.isNaN(date.getTime());
+      const key = isValid ? getLocalDateKey(date) : "unknown";
+      const label = isValid ? formatDateLabel(date) : "Unknown date";
+      const lastGroup = groups[groups.length - 1];
+
+      if (lastGroup && lastGroup.key === key) {
+        lastGroup.items.push(operation);
+      } else {
+        groups.push({ key, label, items: [operation] });
+      }
+    });
+
+    return groups;
+  }, [visibleOperations]);
   const remainingCount = Math.max(filteredOperations.length - MAX_VISIBLE, 0);
   const hasMore = remainingCount > 0;
   const countLabel =
@@ -237,17 +274,27 @@ export function OperationsPanel({
         )}
 
         {!isLoading && !error && filteredOperations.length > 0 && (
-          <div className="space-y-2">
-            {visibleOperations.map((operation) => {
-              const Icon = opIcon(operation);
-              return (
-                <OperationRow
-                  key={operation.operation_log_id}
-                  op={operation}
-                  Icon={Icon}
-                />
-              );
-            })}
+          <div className="space-y-8">
+            {groupedOperations.map((group) => (
+              <div key={group.key} className="space-y-8">
+                <div className="flex items-center gap-3 text-xs font-semibold uppercase text-muted-foreground">
+                  <span>{group.label}</span>
+                  <span className="h-px flex-1 bg-border/60" />
+                </div>
+                <div className="space-y-2">
+                  {group.items.map((operation) => {
+                    const Icon = opIcon(operation);
+                    return (
+                      <OperationRow
+                        key={operation.operation_log_id}
+                        op={operation}
+                        Icon={Icon}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </CardContent>
