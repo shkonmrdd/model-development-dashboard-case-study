@@ -105,6 +105,7 @@ export interface ComplianceChecklist {
   total_items: number;
   completed_items: number;
   assigned_to: Person;
+  completed_at?: string;
 }
 
 export interface Stakeholder {
