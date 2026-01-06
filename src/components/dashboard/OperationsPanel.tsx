@@ -3,11 +3,11 @@
 import * as React from "react";
 import {
   Binary,
+  ChartNoAxesGantt,
   Columns3,
   Database,
   GitBranch,
   GitMerge,
-  ListChecks,
   SquareFunction,
   Sparkles,
   Table2,
@@ -195,8 +195,8 @@ export function OperationsPanel({
       <CardHeader className="relative">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <CardTitle className="flex items-center gap-2 text-base">
-              <ListChecks className="h-5 w-5 text-primary" />
+            <CardTitle className="flex items-center gap-1.5 text-base">
+              <ChartNoAxesGantt className="h-5.5 w-5.5 text-primary" />
               Recent operations
             </CardTitle>
             <CardDescription className="mt-1">
