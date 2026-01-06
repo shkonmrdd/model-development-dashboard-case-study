@@ -3,6 +3,7 @@
 import { useParams } from "next/navigation";
 
 import { DashboardShell } from "@/components/dashboard-shell";
+import { DataTablesPanel } from "@/components/dashboard/DataTablesPanel";
 import { ProjectHeader } from "@/components/dashboard/ProjectHeader";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -35,40 +36,7 @@ export default function ProjectOverviewPage() {
               className="space-y-6 lg:col-span-8"
               aria-label="Build and operations"
             >
-              <Card id="tables">
-                <CardHeader className="flex flex-row items-start justify-between gap-4">
-                  <div>
-                    <h2 className="text-base font-semibold">Data Tables</h2>
-                    <div className="text-sm text-muted-foreground">
-                      <Skeleton className="h-4 w-20" />
-                    </div>
-                  </div>
-                  <Skeleton className="h-5 w-16" />
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-12 gap-3 text-xs text-muted-foreground">
-                    <span className="col-span-4">Name</span>
-                    <span className="col-span-2">Type</span>
-                    <span className="col-span-2">Version</span>
-                    <span className="col-span-2">Rows/Cols</span>
-                    <span className="col-span-2">Checkpoint</span>
-                  </div>
-                  <div className="space-y-3">
-                    {Array.from({ length: 4 }).map((_, index) => (
-                      <div
-                        key={`table-row-${index}`}
-                        className="grid grid-cols-12 items-center gap-3"
-                      >
-                        <Skeleton className="col-span-4 h-4" />
-                        <Skeleton className="col-span-2 h-4" />
-                        <Skeleton className="col-span-2 h-4" />
-                        <Skeleton className="col-span-2 h-4" />
-                        <Skeleton className="col-span-2 h-4" />
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+              <DataTablesPanel projectId={projectId} />
 
               <Card id="operations">
                 <CardHeader className="flex flex-row items-start justify-between gap-4">
