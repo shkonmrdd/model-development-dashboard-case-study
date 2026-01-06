@@ -36,7 +36,7 @@ function formatWhen(iso?: string | null) {
 }
 
 function formatDate(iso?: string | null) {
-  if (!iso) return "—";
+  if (!iso) return "";
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return iso;
   return new Intl.DateTimeFormat(undefined, {
@@ -47,7 +47,7 @@ function formatDate(iso?: string | null) {
 }
 
 function formatTime(iso?: string | null) {
-  if (!iso) return "—";
+  if (!iso) return "";
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return iso;
   return new Intl.DateTimeFormat(undefined, {
@@ -103,13 +103,11 @@ export function GovernancePanel({ projectId }: { projectId: string }) {
   const stakeholders = data?.stakeholders ?? [];
   const checklist = data?.compliance_checklist ?? null;
 
-  const pendingApprovals = React.useMemo(
+  const sortedApprovals = React.useMemo(
     () =>
-      approvals
-        .filter((approval) => (approval.status ?? "").toLowerCase() === "pending")
-        .sort((a, b) =>
-          String(b.created_at ?? "").localeCompare(String(a.created_at ?? ""))
-        ), 
+      [...approvals].sort((a, b) =>
+        String(b.created_at ?? "").localeCompare(String(a.created_at ?? ""))
+      ),
     [approvals]
   );
 
@@ -210,14 +208,14 @@ export function GovernancePanel({ projectId }: { projectId: string }) {
 
             <section className="space-y-2">
               <div className="flex items-center justify-between">
-                <div className="text-sm font-medium">Pending approvals</div>
+                <div className="text-sm font-medium">Approvals</div>
               </div>
 
-              {pendingApprovals.length === 0 ? (
-                <PanelEmpty message="No pending approvals." />
+              {sortedApprovals.length === 0 ? (
+                <PanelEmpty message="No approvals yet." />
               ) : (
                 <div className="space-y-2">
-                  {pendingApprovals.map((approval) => {
+                  {sortedApprovals.map((approval) => {
                     const isPending =
                       (approval.status ?? "").toLowerCase() === "pending";
                     const LeftIcon = isPending ? Clock : CheckCircle2;
