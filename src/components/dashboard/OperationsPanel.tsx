@@ -167,7 +167,7 @@ export function OperationsPanel({
   const countLabel =
     !isLoading && !error
       ? filter === "all"
-        ? `${operations.length} events`
+        ? `${operations.length} operations`
         : `${filteredOperations.length} of ${operations.length}`
       : "—";
 
@@ -210,9 +210,9 @@ export function OperationsPanel({
             </div>
           </div>
 
-          <Badge variant="secondary" className="shrink-0">
+          <div className="shrink-0 text-sm text-muted-foreground">
             {countLabel}
-          </Badge>
+          </div>
         </div>
       </CardHeader>
 

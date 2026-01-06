@@ -236,14 +236,14 @@ export function DataTablesPanel({ projectId }: { projectId: string }) {
   return (
     <Card id="tables">
       <CardHeader className="flex flex-row items-start justify-between gap-4">
-        <div className="space-y-1">
+        <div>
           <div className="flex items-center gap-2">
             <Table2 className="h-5 w-5 text-primary" />
             <h2 className="text-base font-semibold">Data Tables</h2>
           </div>
-          <p className="text-sm text-muted-foreground">
-            {data ? `${data.length} tables` : "Loading tables"}
-          </p>
+        </div>
+        <div className="shrink-0 text-sm text-muted-foreground">
+          {data ? `${data.length} tables` : "Loading tables"}
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
