@@ -32,6 +32,8 @@ import { cn } from "@/lib/utils";
 import { PanelEmpty, PanelError, PanelSkeleton } from "./PanelStates";
 
 const listSkeletons = Array.from({ length: 4 });
+const pluralRules = new Intl.PluralRules();
+const numberFormat = new Intl.NumberFormat();
 
 function formatWhen(iso: string) {
   const date = new Date(iso);
@@ -97,6 +99,11 @@ function sortOperations(operations: OperationLog[]) {
   return [...operations].sort((a, b) =>
     b.execution_timestamp.localeCompare(a.execution_timestamp)
   );
+}
+
+function formatCountLabel(count: number, singular: string, plural = `${singular}s`) {
+  const label = pluralRules.select(count) === "one" ? singular : plural;
+  return `${numberFormat.format(count)} ${label}`;
 }
 
 type OpFilter = "all" | "column_action" | "table_action" | "table_operation" | "other";
@@ -167,8 +174,11 @@ export function OperationsPanel({
   const countLabel =
     !isLoading && !error
       ? filter === "all"
-        ? `${operations.length} operations`
-        : `${filteredOperations.length} of ${operations.length}`
+        ? formatCountLabel(operations.length, "operation")
+        : `${numberFormat.format(filteredOperations.length)} of ${formatCountLabel(
+            operations.length,
+            "operation"
+          )}`
       : "—";
 
   React.useEffect(() => {

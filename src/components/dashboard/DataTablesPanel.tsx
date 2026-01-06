@@ -41,6 +41,14 @@ const checkpointLabels: Record<string, string> = {
   production: "Production",
 };
 
+const pluralRules = new Intl.PluralRules();
+const numberFormat = new Intl.NumberFormat();
+
+function formatCountLabel(count: number, singular: string, plural = `${singular}s`) {
+  const label = pluralRules.select(count) === "one" ? singular : plural;
+  return `${numberFormat.format(count)} ${label}`;
+}
+
 const getCurrentVersion = (table: ProjectTable): TableVersion | undefined =>
   table.versions.find(
     (version) => version.table_version_id === table.current_version_id
@@ -243,7 +251,7 @@ export function DataTablesPanel({ projectId }: { projectId: string }) {
           </div>
         </div>
         <div className="shrink-0 text-sm text-muted-foreground">
-          {data ? `${data.length} tables` : "Loading tables"}
+          {data ? formatCountLabel(data.length, "table") : "Loading tables"}
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
