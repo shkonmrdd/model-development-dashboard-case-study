@@ -3,12 +3,11 @@
 import * as React from "react";
 import { IconAlertTriangle } from "@tabler/icons-react";
 import {
-  ArrowRight,
   Binary,
-  ChevronDown,
   Columns3,
   Database,
   GitMerge,
+  ListChecks,
   Sparkles,
   Table2,
   User,
@@ -24,7 +23,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useProjectOperations } from "@/lib/api/queries";
@@ -67,14 +65,16 @@ function opTone(op: OperationLog) {
   return "bg-muted text-foreground/80 border-border";
 }
 
-function summarizeParams(params: Record<string, unknown>) {
-  const keys = Object.keys(params);
-  if (keys.length === 0) return "—";
-  return keys
-    .slice(0, 3)
-    .map((key) => `${key}=${String(params[key])}`)
-    .join(", ")
-    .concat(keys.length > 3 ? ` +${keys.length - 3}` : "");
+function formatParamValue(value: unknown) {
+  if (value === null || value === undefined) return "—";
+  if (typeof value === "string") return value;
+  if (typeof value === "number" || typeof value === "boolean")
+    return String(value);
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return String(value);
+  }
 }
 
 function sortOperations(operations: OperationLog[]) {
@@ -83,20 +83,58 @@ function sortOperations(operations: OperationLog[]) {
   );
 }
 
+type OpFilter = "all" | "column_action" | "table_action" | "table_operation" | "other";
+
+const filterOptions: Array<{ value: OpFilter; label: string }> = [
+  { value: "all", label: "All" },
+  { value: "column_action", label: "Column" },
+  { value: "table_action", label: "Table" },
+  { value: "table_operation", label: "Ops" },
+  { value: "other", label: "Other" },
+];
+
+const MAX_VISIBLE = 20;
+
 export function OperationsPanel({
   projectId,
-  onViewAll,
 }: {
   projectId: string;
-  onViewAll?: (projectId: string) => void;
 }) {
   const { data, isLoading, error, refetch } = useProjectOperations(projectId);
+  const [filter, setFilter] = React.useState<OpFilter>("all");
+  const [showAll, setShowAll] = React.useState(false);
   const operations = React.useMemo(
     () => (data ? sortOperations(data) : []),
     [data]
   );
+  const filteredOperations = React.useMemo(() => {
+    if (filter === "all") return operations;
+    if (filter === "other") {
+      return operations.filter(
+        (operation) =>
+          operation.operation_type !== "column_action" &&
+          operation.operation_type !== "table_action" &&
+          operation.operation_type !== "table_operation"
+      );
+    }
+    return operations.filter((operation) => operation.operation_type === filter);
+  }, [filter, operations]);
+  const visibleOperations = React.useMemo(
+    () => (showAll ? filteredOperations : filteredOperations.slice(0, MAX_VISIBLE)),
+    [filteredOperations, showAll]
+  );
+  const remainingCount = Math.max(filteredOperations.length - MAX_VISIBLE, 0);
+  const hasMore = remainingCount > 0;
   const countLabel =
-    !isLoading && !error ? `${operations.length} events` : "—";
+    !isLoading && !error
+      ? filter === "all"
+        ? `${operations.length} events`
+        : `${filteredOperations.length} of ${operations.length}`
+      : "—";
+
+  React.useEffect(() => {
+    setShowAll(false);
+  }, [filter, projectId]);
 
   return (
     <Card id="operations" className="relative overflow-hidden">
@@ -109,13 +147,28 @@ export function OperationsPanel({
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <CardTitle className="flex items-center gap-2 text-base">
-              <Sparkles className="h-4 w-4 text-primary" />
+              <ListChecks className="h-5 w-5 text-primary" />
               Recent operations
             </CardTitle>
             <CardDescription className="mt-1">
               Latest transformations and actions for this project, with
               traceable inputs and outputs.
             </CardDescription>
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              {filterOptions.map((option) => (
+                <Button
+                  key={option.value}
+                  type="button"
+                  size="sm"
+                  variant={filter === option.value ? "secondary" : "ghost"}
+                  className="h-7 px-2 text-xs"
+                  onClick={() => setFilter(option.value)}
+                  aria-pressed={filter === option.value}
+                >
+                  {option.label}
+                </Button>
+              ))}
+            </div>
           </div>
 
           <Badge variant="secondary" className="shrink-0">
@@ -177,9 +230,15 @@ export function OperationsPanel({
           </div>
         )}
 
-        {!isLoading && !error && operations.length > 0 && (
+        {!isLoading && !error && operations.length > 0 && filteredOperations.length === 0 && (
+          <div className="rounded-lg border bg-muted/30 p-4 text-sm text-muted-foreground">
+            No operations match this filter.
+          </div>
+        )}
+
+        {!isLoading && !error && filteredOperations.length > 0 && (
           <div className="space-y-2">
-            {operations.map((operation) => {
+            {visibleOperations.map((operation) => {
               const Icon = opIcon(operation);
               return (
                 <OperationRow
@@ -192,24 +251,19 @@ export function OperationsPanel({
           </div>
         )}
       </CardContent>
-
-      <Separator className="relative" />
-
-      <CardFooter className="relative flex items-center justify-between">
-        <div className="text-xs text-muted-foreground">
-          Showing newest first - Click an item to inspect parameters
-        </div>
-        <Button
-          variant="secondary"
-          className="gap-2"
-          onClick={() => onViewAll?.(projectId)}
-          aria-label="View all operations"
-          disabled={!onViewAll}
-        >
-          View all
-          <ArrowRight className="h-4 w-4" />
-        </Button>
-      </CardFooter>
+      {hasMore ? (
+        <CardFooter className="relative justify-end">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="h-8 px-2 text-xs"
+            onClick={() => setShowAll((prev) => !prev)}
+          >
+            {showAll ? "Show less" : `Show more (${remainingCount})`}
+          </Button>
+        </CardFooter>
+      ) : null}
     </Card>
   );
 }
@@ -221,8 +275,7 @@ function OperationRow({
   op: OperationLog;
   Icon: React.ComponentType<{ className?: string }>;
 }) {
-  const [open, setOpen] = React.useState(false);
-  const detailsId = React.useId();
+  const paramEntries = Object.entries(op.input_parameters ?? {});
 
   return (
     <div
@@ -303,47 +356,30 @@ function OperationRow({
             </div>
           </div>
 
-          <div className="mt-3 flex items-center justify-between gap-2">
-            <div className="min-w-0 text-xs text-muted-foreground">
-              <span className="mr-2 inline-flex items-center gap-1">
-                <Columns3 className="h-3.5 w-3.5" />
-                Params:
-              </span>
-              <span className="truncate font-mono">
-                {summarizeParams(op.input_parameters)}
-              </span>
-            </div>
-
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 gap-1"
-              onClick={() => setOpen((prev) => !prev)}
-              aria-expanded={open}
-              aria-controls={detailsId}
-            >
-              Details
-              <ChevronDown
-                className={cn("h-4 w-4 transition-transform", open && "rotate-180")}
-              />
-            </Button>
+          <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+            <span className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap">
+              <Columns3 className="h-3.5 w-3.5" />
+              Params:
+            </span>
+            {paramEntries.length === 0 ? (
+              <span className="font-mono">—</span>
+            ) : (
+              paramEntries.map(([key, value]) => (
+                <span
+                  key={key}
+                  className="inline-flex items-center gap-1 rounded-md border border-border/60 bg-muted/40 px-2 py-0.5 font-mono text-[11px] text-foreground/80 whitespace-nowrap"
+                >
+                  <span className="text-muted-foreground">{key}</span>
+                  <span>=</span>
+                  <span className="text-foreground">
+                    {formatParamValue(value)}
+                  </span>
+                </span>
+              ))
+            )}
           </div>
         </div>
       </div>
-
-      {open ? (
-        <div
-          id={detailsId}
-          className="mt-3 rounded-lg border bg-muted/40 p-3"
-        >
-          <div className="mb-2 text-xs font-medium text-foreground/80">
-            Input parameters
-          </div>
-          <pre className="max-h-40 overflow-auto rounded-md bg-background p-3 text-xs leading-relaxed">
-            {JSON.stringify(op.input_parameters, null, 2)}
-          </pre>
-        </div>
-      ) : null}
     </div>
   );
 }
