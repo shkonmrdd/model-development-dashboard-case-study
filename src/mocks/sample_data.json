@@ -1,0 +1,857 @@
+{
+  "projects": [
+    {
+      "project_id": "proj-001",
+      "project_name": "Credit Risk Model Q1 2025",
+      "project_type": "ML",
+      "status": "Active",
+      "owner": {
+        "user_id": "user-001",
+        "name": "John Smith",
+        "title": "Senior Data Scientist"
+      },
+      "governance_manager": {
+        "user_id": "user-002",
+        "name": "Sarah Chen",
+        "title": "Model Risk Manager"
+      },
+      "department": {
+        "department_id": "dept-001",
+        "name": "Model Risk Management"
+      },
+      "is_segmented": false,
+      "objectives": "Build predictive model for credit default risk using customer transaction history and demographic data",
+      "created_at": "2025-01-22T09:00:00Z",
+      "updated_at": "2025-06-15T14:30:00Z"
+    },
+    {
+      "project_id": "proj-002",
+      "project_name": "Loan Default Forecasting",
+      "project_type": "TimeSeries",
+      "status": "Review",
+      "owner": {
+        "user_id": "user-003",
+        "name": "Emily Rodriguez",
+        "title": "Data Scientist"
+      },
+      "governance_manager": {
+        "user_id": "user-002",
+        "name": "Sarah Chen",
+        "title": "Model Risk Manager"
+      },
+      "department": {
+        "department_id": "dept-002",
+        "name": "Credit Analytics"
+      },
+      "is_segmented": true,
+      "objectives": "Forecast monthly loan default rates across different product segments",
+      "created_at": "2024-11-10T11:00:00Z",
+      "updated_at": "2025-06-10T09:45:00Z"
+    },
+    {
+      "project_id": "proj-003",
+      "project_name": "Customer Churn Scorecard",
+      "project_type": "Scorecard",
+      "status": "Approved",
+      "owner": {
+        "user_id": "user-004",
+        "name": "Michael Chen",
+        "title": "Lead Data Scientist"
+      },
+      "governance_manager": {
+        "user_id": "user-005",
+        "name": "Jennifer Walsh",
+        "title": "Senior Risk Manager"
+      },
+      "department": {
+        "department_id": "dept-003",
+        "name": "Customer Analytics"
+      },
+      "is_segmented": false,
+      "objectives": "Develop interpretable scorecard for predicting customer churn probability",
+      "created_at": "2024-08-15T08:30:00Z",
+      "updated_at": "2025-05-20T16:00:00Z"
+    },
+    {
+      "project_id": "proj-004",
+      "project_name": "Fraud Detection AI",
+      "project_type": "AI",
+      "status": "Draft",
+      "owner": {
+        "user_id": "user-006",
+        "name": "David Park",
+        "title": "ML Engineer"
+      },
+      "governance_manager": null,
+      "department": {
+        "department_id": "dept-004",
+        "name": "Fraud Prevention"
+      },
+      "is_segmented": false,
+      "objectives": "Build real-time fraud detection system using deep learning on transaction patterns",
+      "created_at": "2025-06-01T10:00:00Z",
+      "updated_at": "2025-06-14T11:20:00Z"
+    },
+    {
+      "project_id": "proj-005",
+      "project_name": "Insurance Claim Prediction",
+      "project_type": "ML",
+      "status": "Locked",
+      "owner": {
+        "user_id": "user-007",
+        "name": "Amanda Foster",
+        "title": "Senior Data Scientist"
+      },
+      "governance_manager": {
+        "user_id": "user-005",
+        "name": "Jennifer Walsh",
+        "title": "Senior Risk Manager"
+      },
+      "department": {
+        "department_id": "dept-005",
+        "name": "Insurance Analytics"
+      },
+      "is_segmented": true,
+      "objectives": "Predict insurance claim likelihood and severity for policy pricing optimization",
+      "created_at": "2024-03-10T09:00:00Z",
+      "updated_at": "2025-04-15T14:00:00Z"
+    }
+  ],
+
+  "project_tables": {
+    "proj-001": [
+      {
+        "project_table_id": "ptab-001",
+        "table_name": "customer_transactions",
+        "display_name": "Customer Purchases",
+        "table_type": "source",
+        "current_version_id": "tver-001-v1",
+        "versions": [
+          {
+            "table_version_id": "tver-001-v1",
+            "version_number": 1,
+            "row_count": 150000,
+            "column_count": 12,
+            "is_materialized": true,
+            "checkpoint_type": "raw_upload",
+            "created_at": "2025-01-22T10:00:00Z",
+            "created_by": "John Smith"
+          }
+        ],
+        "columns": [
+          { "column_id": "col-001", "column_name": "customer_id", "display_name": "Customer ID", "data_type": "string", "role": "lookup" },
+          { "column_id": "col-002", "column_name": "transaction_date", "display_name": "Transaction Date", "data_type": "datetime", "role": "time_id" },
+          { "column_id": "col-003", "column_name": "amount", "display_name": "Purchase Amount", "data_type": "numeric", "role": "exog" },
+          { "column_id": "col-004", "column_name": "category", "display_name": "Category", "data_type": "categorical", "role": "exog" },
+          { "column_id": "col-005", "column_name": "merchant_id", "display_name": "Merchant ID", "data_type": "string", "role": "not_used" },
+          { "column_id": "col-006", "column_name": "transaction_type", "display_name": "Transaction Type", "data_type": "categorical", "role": "exog" }
+        ]
+      },
+      {
+        "project_table_id": "ptab-002",
+        "table_name": "customer_demographics",
+        "display_name": "Customer Demographics",
+        "table_type": "source",
+        "current_version_id": "tver-002-v1",
+        "versions": [
+          {
+            "table_version_id": "tver-002-v1",
+            "version_number": 1,
+            "row_count": 75000,
+            "column_count": 8,
+            "is_materialized": true,
+            "checkpoint_type": "raw_upload",
+            "created_at": "2025-01-22T10:15:00Z",
+            "created_by": "John Smith"
+          }
+        ],
+        "columns": [
+          { "column_id": "col-007", "column_name": "customer_id", "display_name": "Customer ID", "data_type": "string", "role": "lookup" },
+          { "column_id": "col-008", "column_name": "age", "display_name": "Age", "data_type": "numeric", "role": "exog" },
+          { "column_id": "col-009", "column_name": "income", "display_name": "Annual Income", "data_type": "numeric", "role": "exog" },
+          { "column_id": "col-010", "column_name": "credit_score", "display_name": "Credit Score", "data_type": "numeric", "role": "exog" },
+          { "column_id": "col-011", "column_name": "employment_status", "display_name": "Employment Status", "data_type": "categorical", "role": "exog" }
+        ]
+      },
+      {
+        "project_table_id": "ptab-003",
+        "table_name": "customer_features",
+        "display_name": "Engineered Features",
+        "table_type": "derived",
+        "current_version_id": "tver-003-v5",
+        "versions": [
+          {
+            "table_version_id": "tver-003-v1",
+            "version_number": 1,
+            "row_count": 74500,
+            "column_count": 10,
+            "is_materialized": true,
+            "checkpoint_type": "user_manual",
+            "checkpoint_name": "Initial merge",
+            "parent_version_id": null,
+            "created_at": "2025-01-23T09:00:00Z",
+            "created_by": "John Smith"
+          },
+          {
+            "table_version_id": "tver-003-v2",
+            "version_number": 2,
+            "row_count": 74500,
+            "column_count": 12,
+            "is_materialized": false,
+            "checkpoint_type": null,
+            "parent_version_id": "tver-003-v1",
+            "created_at": "2025-01-25T11:30:00Z",
+            "created_by": "John Smith"
+          },
+          {
+            "table_version_id": "tver-003-v3",
+            "version_number": 3,
+            "row_count": 73200,
+            "column_count": 12,
+            "is_materialized": true,
+            "checkpoint_type": "user_manual",
+            "checkpoint_name": "After null removal",
+            "parent_version_id": "tver-003-v2",
+            "created_at": "2025-02-01T14:00:00Z",
+            "created_by": "John Smith"
+          },
+          {
+            "table_version_id": "tver-003-v4",
+            "version_number": 4,
+            "row_count": 73200,
+            "column_count": 15,
+            "is_materialized": false,
+            "checkpoint_type": null,
+            "parent_version_id": "tver-003-v3",
+            "created_at": "2025-06-10T10:00:00Z",
+            "created_by": "John Smith"
+          },
+          {
+            "table_version_id": "tver-003-v5",
+            "version_number": 5,
+            "row_count": 73200,
+            "column_count": 18,
+            "is_materialized": true,
+            "checkpoint_type": "development_gate",
+            "parent_version_id": "tver-003-v4",
+            "created_at": "2025-06-15T14:30:00Z",
+            "created_by": "John Smith"
+          }
+        ],
+        "columns": [
+          { "column_id": "col-012", "column_name": "customer_id", "display_name": "Customer ID", "data_type": "string", "role": "lookup" },
+          { "column_id": "col-013", "column_name": "avg_transaction", "display_name": "Avg Transaction", "data_type": "numeric", "role": "exog" },
+          { "column_id": "col-014", "column_name": "total_spend", "display_name": "Total Spend", "data_type": "numeric", "role": "exog" },
+          { "column_id": "col-015", "column_name": "transaction_count", "display_name": "Transaction Count", "data_type": "numeric", "role": "exog" },
+          { "column_id": "col-016", "column_name": "days_since_last_txn", "display_name": "Days Since Last Transaction", "data_type": "numeric", "role": "exog" },
+          { "column_id": "col-017", "column_name": "log_income", "display_name": "Log Income", "data_type": "numeric", "role": "exog" },
+          { "column_id": "col-018", "column_name": "income_to_spend_ratio", "display_name": "Income to Spend Ratio", "data_type": "numeric", "role": "exog" },
+          { "column_id": "col-019", "column_name": "default_flag", "display_name": "Default Flag", "data_type": "boolean", "role": "endog" }
+        ]
+      }
+    ],
+    "proj-002": [
+      {
+        "project_table_id": "ptab-004",
+        "table_name": "monthly_defaults",
+        "display_name": "Monthly Default Rates",
+        "table_type": "source",
+        "current_version_id": "tver-004-v1",
+        "versions": [
+          {
+            "table_version_id": "tver-004-v1",
+            "version_number": 1,
+            "row_count": 360,
+            "column_count": 6,
+            "is_materialized": true,
+            "checkpoint_type": "raw_upload",
+            "created_at": "2024-11-10T12:00:00Z",
+            "created_by": "Emily Rodriguez"
+          }
+        ],
+        "columns": [
+          { "column_id": "col-020", "column_name": "month_id", "display_name": "Month", "data_type": "datetime", "role": "time_id" },
+          { "column_id": "col-021", "column_name": "product_segment", "display_name": "Product Segment", "data_type": "categorical", "role": "lookup" },
+          { "column_id": "col-022", "column_name": "default_rate", "display_name": "Default Rate", "data_type": "numeric", "role": "endog" },
+          { "column_id": "col-023", "column_name": "loan_volume", "display_name": "Loan Volume", "data_type": "numeric", "role": "exog" },
+          { "column_id": "col-024", "column_name": "avg_loan_size", "display_name": "Average Loan Size", "data_type": "numeric", "role": "exog" }
+        ]
+      },
+      {
+        "project_table_id": "ptab-005",
+        "table_name": "economic_indicators",
+        "display_name": "Economic Indicators",
+        "table_type": "source",
+        "current_version_id": "tver-005-v1",
+        "versions": [
+          {
+            "table_version_id": "tver-005-v1",
+            "version_number": 1,
+            "row_count": 120,
+            "column_count": 8,
+            "is_materialized": true,
+            "checkpoint_type": "raw_upload",
+            "created_at": "2024-11-11T09:00:00Z",
+            "created_by": "Emily Rodriguez"
+          }
+        ],
+        "columns": [
+          { "column_id": "col-025", "column_name": "month_id", "display_name": "Month", "data_type": "datetime", "role": "time_id" },
+          { "column_id": "col-026", "column_name": "unemployment_rate", "display_name": "Unemployment Rate", "data_type": "numeric", "role": "exog" },
+          { "column_id": "col-027", "column_name": "gdp_growth", "display_name": "GDP Growth", "data_type": "numeric", "role": "exog" },
+          { "column_id": "col-028", "column_name": "interest_rate", "display_name": "Interest Rate", "data_type": "numeric", "role": "exog" },
+          { "column_id": "col-029", "column_name": "inflation_rate", "display_name": "Inflation Rate", "data_type": "numeric", "role": "exog" }
+        ]
+      },
+      {
+        "project_table_id": "ptab-006",
+        "table_name": "forecast_dataset",
+        "display_name": "Forecast Training Data",
+        "table_type": "derived",
+        "current_version_id": "tver-006-v4",
+        "versions": [
+          {
+            "table_version_id": "tver-006-v1",
+            "version_number": 1,
+            "row_count": 360,
+            "column_count": 12,
+            "is_materialized": true,
+            "checkpoint_type": "user_manual",
+            "checkpoint_name": "Merged dataset",
+            "parent_version_id": null,
+            "created_at": "2024-11-15T10:00:00Z",
+            "created_by": "Emily Rodriguez"
+          },
+          {
+            "table_version_id": "tver-006-v2",
+            "version_number": 2,
+            "row_count": 360,
+            "column_count": 15,
+            "is_materialized": false,
+            "checkpoint_type": null,
+            "parent_version_id": "tver-006-v1",
+            "created_at": "2024-12-01T14:30:00Z",
+            "created_by": "Emily Rodriguez"
+          },
+          {
+            "table_version_id": "tver-006-v3",
+            "version_number": 3,
+            "row_count": 348,
+            "column_count": 15,
+            "is_materialized": true,
+            "checkpoint_type": "user_manual",
+            "checkpoint_name": "Outliers removed",
+            "parent_version_id": "tver-006-v2",
+            "created_at": "2025-01-10T11:00:00Z",
+            "created_by": "Emily Rodriguez"
+          },
+          {
+            "table_version_id": "tver-006-v4",
+            "version_number": 4,
+            "row_count": 348,
+            "column_count": 18,
+            "is_materialized": true,
+            "checkpoint_type": "development_gate",
+            "parent_version_id": "tver-006-v3",
+            "created_at": "2025-06-08T16:00:00Z",
+            "created_by": "Emily Rodriguez"
+          }
+        ],
+        "columns": [
+          { "column_id": "col-030", "column_name": "month_id", "display_name": "Month", "data_type": "datetime", "role": "time_id" },
+          { "column_id": "col-031", "column_name": "product_segment", "display_name": "Product Segment", "data_type": "categorical", "role": "lookup" },
+          { "column_id": "col-032", "column_name": "default_rate", "display_name": "Default Rate", "data_type": "numeric", "role": "endog" },
+          { "column_id": "col-033", "column_name": "lag_1_default", "display_name": "Default Rate (Lag 1)", "data_type": "numeric", "role": "exog" },
+          { "column_id": "col-034", "column_name": "lag_3_default", "display_name": "Default Rate (Lag 3)", "data_type": "numeric", "role": "exog" },
+          { "column_id": "col-035", "column_name": "moving_avg_6m", "display_name": "6-Month Moving Avg", "data_type": "numeric", "role": "exog" },
+          { "column_id": "col-036", "column_name": "unemployment_rate", "display_name": "Unemployment Rate", "data_type": "numeric", "role": "exog" },
+          { "column_id": "col-037", "column_name": "gdp_growth", "display_name": "GDP Growth", "data_type": "numeric", "role": "exog" }
+        ]
+      }
+    ],
+    "proj-003": [
+      {
+        "project_table_id": "ptab-007",
+        "table_name": "churn_training",
+        "display_name": "Churn Training Data",
+        "table_type": "derived",
+        "current_version_id": "tver-007-v3",
+        "versions": [
+          {
+            "table_version_id": "tver-007-v1",
+            "version_number": 1,
+            "row_count": 250000,
+            "column_count": 20,
+            "is_materialized": true,
+            "checkpoint_type": "raw_upload",
+            "parent_version_id": null,
+            "created_at": "2024-08-16T09:00:00Z",
+            "created_by": "Michael Chen"
+          },
+          {
+            "table_version_id": "tver-007-v2",
+            "version_number": 2,
+            "row_count": 248500,
+            "column_count": 22,
+            "is_materialized": true,
+            "checkpoint_type": "user_manual",
+            "checkpoint_name": "Feature engineering complete",
+            "parent_version_id": "tver-007-v1",
+            "created_at": "2024-10-20T15:00:00Z",
+            "created_by": "Michael Chen"
+          },
+          {
+            "table_version_id": "tver-007-v3",
+            "version_number": 3,
+            "row_count": 248500,
+            "column_count": 25,
+            "is_materialized": true,
+            "checkpoint_type": "production",
+            "parent_version_id": "tver-007-v2",
+            "created_at": "2025-05-20T16:00:00Z",
+            "created_by": "Michael Chen"
+          }
+        ],
+        "columns": [
+          { "column_id": "col-038", "column_name": "customer_id", "display_name": "Customer ID", "data_type": "string", "role": "lookup" },
+          { "column_id": "col-039", "column_name": "tenure_months", "display_name": "Tenure (Months)", "data_type": "numeric", "role": "exog" },
+          { "column_id": "col-040", "column_name": "monthly_charges", "display_name": "Monthly Charges", "data_type": "numeric", "role": "exog" },
+          { "column_id": "col-041", "column_name": "total_charges", "display_name": "Total Charges", "data_type": "numeric", "role": "exog" },
+          { "column_id": "col-042", "column_name": "contract_type", "display_name": "Contract Type", "data_type": "categorical", "role": "exog" },
+          { "column_id": "col-043", "column_name": "churn_flag", "display_name": "Churned", "data_type": "boolean", "role": "endog" }
+        ]
+      }
+    ],
+    "proj-004": [
+      {
+        "project_table_id": "ptab-008",
+        "table_name": "transaction_stream",
+        "display_name": "Transaction Stream",
+        "table_type": "source",
+        "current_version_id": "tver-008-v1",
+        "versions": [
+          {
+            "table_version_id": "tver-008-v1",
+            "version_number": 1,
+            "row_count": 5000000,
+            "column_count": 15,
+            "is_materialized": true,
+            "checkpoint_type": "raw_upload",
+            "created_at": "2025-06-01T11:00:00Z",
+            "created_by": "David Park"
+          }
+        ],
+        "columns": [
+          { "column_id": "col-044", "column_name": "transaction_id", "display_name": "Transaction ID", "data_type": "string", "role": "lookup" },
+          { "column_id": "col-045", "column_name": "timestamp", "display_name": "Timestamp", "data_type": "datetime", "role": "time_id" },
+          { "column_id": "col-046", "column_name": "amount", "display_name": "Amount", "data_type": "numeric", "role": "exog" },
+          { "column_id": "col-047", "column_name": "merchant_category", "display_name": "Merchant Category", "data_type": "categorical", "role": "exog" },
+          { "column_id": "col-048", "column_name": "is_fraud", "display_name": "Fraud Flag", "data_type": "boolean", "role": "endog" }
+        ]
+      }
+    ],
+    "proj-005": [
+      {
+        "project_table_id": "ptab-009",
+        "table_name": "claim_history",
+        "display_name": "Historical Claims",
+        "table_type": "source",
+        "current_version_id": "tver-009-v1",
+        "versions": [
+          {
+            "table_version_id": "tver-009-v1",
+            "version_number": 1,
+            "row_count": 500000,
+            "column_count": 18,
+            "is_materialized": true,
+            "checkpoint_type": "raw_upload",
+            "created_at": "2024-03-10T10:00:00Z",
+            "created_by": "Amanda Foster"
+          }
+        ],
+        "columns": [
+          { "column_id": "col-049", "column_name": "claim_id", "display_name": "Claim ID", "data_type": "string", "role": "lookup" },
+          { "column_id": "col-050", "column_name": "policy_id", "display_name": "Policy ID", "data_type": "string", "role": "lookup" },
+          { "column_id": "col-051", "column_name": "claim_date", "display_name": "Claim Date", "data_type": "datetime", "role": "time_id" },
+          { "column_id": "col-052", "column_name": "claim_amount", "display_name": "Claim Amount", "data_type": "numeric", "role": "endog" },
+          { "column_id": "col-053", "column_name": "claim_type", "display_name": "Claim Type", "data_type": "categorical", "role": "exog" }
+        ]
+      },
+      {
+        "project_table_id": "ptab-010",
+        "table_name": "policy_features",
+        "display_name": "Policy Features",
+        "table_type": "derived",
+        "current_version_id": "tver-010-v4",
+        "versions": [
+          {
+            "table_version_id": "tver-010-v1",
+            "version_number": 1,
+            "row_count": 120000,
+            "column_count": 15,
+            "is_materialized": true,
+            "checkpoint_type": "user_manual",
+            "checkpoint_name": "Initial features",
+            "parent_version_id": null,
+            "created_at": "2024-03-20T14:00:00Z",
+            "created_by": "Amanda Foster"
+          },
+          {
+            "table_version_id": "tver-010-v2",
+            "version_number": 2,
+            "row_count": 118500,
+            "column_count": 18,
+            "is_materialized": false,
+            "checkpoint_type": null,
+            "parent_version_id": "tver-010-v1",
+            "created_at": "2024-05-15T11:30:00Z",
+            "created_by": "Amanda Foster"
+          },
+          {
+            "table_version_id": "tver-010-v3",
+            "version_number": 3,
+            "row_count": 118500,
+            "column_count": 22,
+            "is_materialized": true,
+            "checkpoint_type": "validation_gate",
+            "parent_version_id": "tver-010-v2",
+            "created_at": "2024-12-10T09:00:00Z",
+            "created_by": "Amanda Foster"
+          },
+          {
+            "table_version_id": "tver-010-v4",
+            "version_number": 4,
+            "row_count": 118500,
+            "column_count": 22,
+            "is_materialized": true,
+            "checkpoint_type": "production",
+            "parent_version_id": "tver-010-v3",
+            "created_at": "2025-04-15T14:00:00Z",
+            "created_by": "Amanda Foster"
+          }
+        ],
+        "columns": [
+          { "column_id": "col-054", "column_name": "policy_id", "display_name": "Policy ID", "data_type": "string", "role": "lookup" },
+          { "column_id": "col-055", "column_name": "premium_amount", "display_name": "Premium Amount", "data_type": "numeric", "role": "exog" },
+          { "column_id": "col-056", "column_name": "coverage_amount", "display_name": "Coverage Amount", "data_type": "numeric", "role": "exog" },
+          { "column_id": "col-057", "column_name": "policy_age_months", "display_name": "Policy Age (Months)", "data_type": "numeric", "role": "exog" },
+          { "column_id": "col-058", "column_name": "claim_probability", "display_name": "Claim Probability", "data_type": "numeric", "role": "endog" },
+          { "column_id": "col-059", "column_name": "expected_claim_amount", "display_name": "Expected Claim Amount", "data_type": "numeric", "role": "endog" }
+        ]
+      }
+    ]
+  },
+
+  "recent_operations": {
+    "proj-001": [
+      {
+        "operation_log_id": "op-001-010",
+        "operation_type": "column_action",
+        "operation_name": "log_transform",
+        "input_parameters": { "column": "income", "base": "e" },
+        "executed_by": { "user_id": "user-001", "name": "John Smith" },
+        "execution_timestamp": "2025-06-15T14:30:00Z",
+        "affected_table": "customer_features",
+        "output_table_version": "tver-003-v5"
+      },
+      {
+        "operation_log_id": "op-001-009",
+        "operation_type": "column_action",
+        "operation_name": "create_ratio",
+        "input_parameters": { "numerator": "income", "denominator": "total_spend", "output_column": "income_to_spend_ratio" },
+        "executed_by": { "user_id": "user-001", "name": "John Smith" },
+        "execution_timestamp": "2025-06-15T14:15:00Z",
+        "affected_table": "customer_features",
+        "output_table_version": "tver-003-v4"
+      },
+      {
+        "operation_log_id": "op-001-008",
+        "operation_type": "column_action",
+        "operation_name": "calculate_days_since",
+        "input_parameters": { "date_column": "last_transaction_date", "output_column": "days_since_last_txn" },
+        "executed_by": { "user_id": "user-001", "name": "John Smith" },
+        "execution_timestamp": "2025-06-10T10:00:00Z",
+        "affected_table": "customer_features",
+        "output_table_version": "tver-003-v4"
+      },
+      {
+        "operation_log_id": "op-001-007",
+        "operation_type": "table_action",
+        "operation_name": "remove_nulls",
+        "input_parameters": { "strategy": "drop_rows", "threshold": 0.5 },
+        "executed_by": { "user_id": "user-001", "name": "John Smith" },
+        "execution_timestamp": "2025-02-01T14:00:00Z",
+        "affected_table": "customer_features",
+        "output_table_version": "tver-003-v3"
+      },
+      {
+        "operation_log_id": "op-001-006",
+        "operation_type": "column_action",
+        "operation_name": "aggregate",
+        "input_parameters": { "function": "sum", "group_by": "customer_id", "column": "amount", "output_column": "total_spend" },
+        "executed_by": { "user_id": "user-001", "name": "John Smith" },
+        "execution_timestamp": "2025-01-25T11:30:00Z",
+        "affected_table": "customer_features",
+        "output_table_version": "tver-003-v2"
+      },
+      {
+        "operation_log_id": "op-001-005",
+        "operation_type": "column_action",
+        "operation_name": "aggregate",
+        "input_parameters": { "function": "mean", "group_by": "customer_id", "column": "amount", "output_column": "avg_transaction" },
+        "executed_by": { "user_id": "user-001", "name": "John Smith" },
+        "execution_timestamp": "2025-01-25T11:00:00Z",
+        "affected_table": "customer_features",
+        "output_table_version": "tver-003-v2"
+      },
+      {
+        "operation_log_id": "op-001-004",
+        "operation_type": "table_operation",
+        "operation_name": "merge_tables",
+        "input_parameters": { "join_type": "inner", "join_key": "customer_id", "tables": ["customer_transactions", "customer_demographics"] },
+        "executed_by": { "user_id": "user-001", "name": "John Smith" },
+        "execution_timestamp": "2025-01-23T09:00:00Z",
+        "affected_table": "customer_features",
+        "output_table_version": "tver-003-v1"
+      },
+      {
+        "operation_log_id": "op-001-003",
+        "operation_type": "column_action",
+        "operation_name": "assign_role",
+        "input_parameters": { "column": "default_flag", "role": "endog" },
+        "executed_by": { "user_id": "user-001", "name": "John Smith" },
+        "execution_timestamp": "2025-01-22T15:00:00Z",
+        "affected_table": "customer_demographics",
+        "output_table_version": null
+      },
+      {
+        "operation_log_id": "op-001-002",
+        "operation_type": "table_action",
+        "operation_name": "upload_data",
+        "input_parameters": { "source": "customer_demographics.csv", "rows": 75000 },
+        "executed_by": { "user_id": "user-001", "name": "John Smith" },
+        "execution_timestamp": "2025-01-22T10:15:00Z",
+        "affected_table": "customer_demographics",
+        "output_table_version": "tver-002-v1"
+      },
+      {
+        "operation_log_id": "op-001-001",
+        "operation_type": "table_action",
+        "operation_name": "upload_data",
+        "input_parameters": { "source": "customer_transactions.csv", "rows": 150000 },
+        "executed_by": { "user_id": "user-001", "name": "John Smith" },
+        "execution_timestamp": "2025-01-22T10:00:00Z",
+        "affected_table": "customer_transactions",
+        "output_table_version": "tver-001-v1"
+      }
+    ],
+    "proj-002": [
+      {
+        "operation_log_id": "op-002-005",
+        "operation_type": "column_action",
+        "operation_name": "create_lag",
+        "input_parameters": { "column": "default_rate", "periods": 3, "output_column": "lag_3_default" },
+        "executed_by": { "user_id": "user-003", "name": "Emily Rodriguez" },
+        "execution_timestamp": "2025-06-08T16:00:00Z",
+        "affected_table": "forecast_dataset",
+        "output_table_version": "tver-006-v4"
+      },
+      {
+        "operation_log_id": "op-002-004",
+        "operation_type": "table_action",
+        "operation_name": "remove_outliers",
+        "input_parameters": { "method": "iqr", "columns": ["default_rate", "loan_volume"] },
+        "executed_by": { "user_id": "user-003", "name": "Emily Rodriguez" },
+        "execution_timestamp": "2025-01-10T11:00:00Z",
+        "affected_table": "forecast_dataset",
+        "output_table_version": "tver-006-v3"
+      },
+      {
+        "operation_log_id": "op-002-003",
+        "operation_type": "column_action",
+        "operation_name": "moving_average",
+        "input_parameters": { "column": "default_rate", "window": 6, "output_column": "moving_avg_6m" },
+        "executed_by": { "user_id": "user-003", "name": "Emily Rodriguez" },
+        "execution_timestamp": "2024-12-01T14:30:00Z",
+        "affected_table": "forecast_dataset",
+        "output_table_version": "tver-006-v2"
+      }
+    ]
+  },
+
+  "governance": {
+    "proj-001": {
+      "approvals": [
+        {
+          "approval_id": "appr-001",
+          "approval_type": "DevCompletion",
+          "status": "Pending",
+          "approver": { "user_id": "user-002", "name": "Sarah Chen", "role": "Governance Manager" },
+          "requested_by": { "user_id": "user-001", "name": "John Smith" },
+          "created_at": "2025-06-15T15:00:00Z",
+          "comments": null
+        }
+      ],
+      "compliance_checklist": {
+        "checklist_id": "chk-001",
+        "template_name": "SR 11-7 Model Risk Management",
+        "status": "in_progress",
+        "completion_percentage": 65,
+        "total_items": 20,
+        "completed_items": 13,
+        "assigned_to": { "user_id": "user-002", "name": "Sarah Chen" }
+      },
+      "stakeholders": [
+        { "user_id": "user-008", "name": "Michael Brown", "role": "Business Owner" },
+        { "user_id": "user-002", "name": "Sarah Chen", "role": "Governance Manager" },
+        { "user_id": "user-001", "name": "John Smith", "role": "Developer" }
+      ]
+    },
+    "proj-002": {
+      "approvals": [
+        {
+          "approval_id": "appr-002",
+          "approval_type": "DevCompletion",
+          "status": "Approved",
+          "approver": { "user_id": "user-002", "name": "Sarah Chen", "role": "Governance Manager" },
+          "requested_by": { "user_id": "user-003", "name": "Emily Rodriguez" },
+          "created_at": "2025-06-08T17:00:00Z",
+          "approved_at": "2025-06-09T10:30:00Z",
+          "comments": "Model documentation complete. Ready for validation."
+        },
+        {
+          "approval_id": "appr-003",
+          "approval_type": "ValidationStart",
+          "status": "Pending",
+          "approver": { "user_id": "user-009", "name": "Robert Kim", "role": "Validation Manager" },
+          "requested_by": { "user_id": "user-002", "name": "Sarah Chen" },
+          "created_at": "2025-06-09T11:00:00Z",
+          "comments": null
+        }
+      ],
+      "compliance_checklist": {
+        "checklist_id": "chk-002",
+        "template_name": "SR 11-7 Model Risk Management",
+        "status": "in_progress",
+        "completion_percentage": 80,
+        "total_items": 20,
+        "completed_items": 16,
+        "assigned_to": { "user_id": "user-002", "name": "Sarah Chen" }
+      },
+      "stakeholders": [
+        { "user_id": "user-010", "name": "Lisa Wang", "role": "Business Owner" },
+        { "user_id": "user-002", "name": "Sarah Chen", "role": "Governance Manager" },
+        { "user_id": "user-003", "name": "Emily Rodriguez", "role": "Developer" }
+      ]
+    },
+    "proj-003": {
+      "approvals": [
+        {
+          "approval_id": "appr-004",
+          "approval_type": "DevCompletion",
+          "status": "Approved",
+          "approver": { "user_id": "user-005", "name": "Jennifer Walsh", "role": "Governance Manager" },
+          "approved_at": "2025-03-15T14:00:00Z",
+          "comments": "Approved for validation"
+        },
+        {
+          "approval_id": "appr-005",
+          "approval_type": "ValidationCompletion",
+          "status": "Approved",
+          "approver": { "user_id": "user-009", "name": "Robert Kim", "role": "Validation Manager" },
+          "approved_at": "2025-05-10T16:30:00Z",
+          "comments": "Validation complete. Model performs within acceptable limits."
+        },
+        {
+          "approval_id": "appr-006",
+          "approval_type": "ProductionApproval",
+          "status": "Approved",
+          "approver": { "user_id": "user-011", "name": "Thomas Anderson", "role": "Business Stakeholder" },
+          "approved_at": "2025-05-20T11:00:00Z",
+          "comments": "Approved for production deployment"
+        }
+      ],
+      "compliance_checklist": {
+        "checklist_id": "chk-003",
+        "template_name": "SR 11-7 Model Risk Management",
+        "status": "Completed",
+        "completion_percentage": 100,
+        "total_items": 20,
+        "completed_items": 20,
+        "assigned_to": { "user_id": "user-005", "name": "Jennifer Walsh" },
+        "completed_at": "2025-05-18T09:00:00Z"
+      },
+      "stakeholders": [
+        { "user_id": "user-011", "name": "Thomas Anderson", "role": "Business Owner" },
+        { "user_id": "user-005", "name": "Jennifer Walsh", "role": "Governance Manager" },
+        { "user_id": "user-004", "name": "Michael Chen", "role": "Developer" }
+      ]
+    },
+    "proj-004": {
+      "approvals": [],
+      "compliance_checklist": null,
+      "stakeholders": [
+        { "user_id": "user-006", "name": "David Park", "role": "Developer" }
+      ]
+    },
+    "proj-005": {
+      "approvals": [
+        {
+          "approval_id": "appr-007",
+          "approval_type": "DevCompletion",
+          "status": "Approved",
+          "approver": { "user_id": "user-005", "name": "Jennifer Walsh", "role": "Governance Manager" },
+          "approved_at": "2024-08-20T10:00:00Z",
+          "comments": "Approved"
+        },
+        {
+          "approval_id": "appr-008",
+          "approval_type": "ValidationCompletion",
+          "status": "Approved",
+          "approver": { "user_id": "user-009", "name": "Robert Kim", "role": "Validation Manager" },
+          "approved_at": "2024-12-15T14:00:00Z",
+          "comments": "Validation passed"
+        },
+        {
+          "approval_id": "appr-009",
+          "approval_type": "ProductionApproval",
+          "status": "Approved",
+          "approver": { "user_id": "user-012", "name": "Karen Miller", "role": "Business Stakeholder" },
+          "approved_at": "2025-04-10T11:00:00Z",
+          "comments": "Approved for production"
+        }
+      ],
+      "compliance_checklist": {
+        "checklist_id": "chk-004",
+        "template_name": "Insurance Model Compliance",
+        "status": "Completed",
+        "completion_percentage": 100,
+        "total_items": 15,
+        "completed_items": 15,
+        "assigned_to": { "user_id": "user-005", "name": "Jennifer Walsh" },
+        "completed_at": "2025-04-05T16:00:00Z"
+      },
+      "stakeholders": [
+        { "user_id": "user-012", "name": "Karen Miller", "role": "Business Owner" },
+        { "user_id": "user-005", "name": "Jennifer Walsh", "role": "Governance Manager" },
+        { "user_id": "user-007", "name": "Amanda Foster", "role": "Developer" }
+      ]
+    }
+  },
+
+  "table_lineage": {
+    "proj-001": [
+      { "child_table": "customer_features", "parent_table": "customer_transactions", "parent_type": "source_dataset" },
+      { "child_table": "customer_features", "parent_table": "customer_demographics", "parent_type": "source_dataset" }
+    ],
+    "proj-002": [
+      { "child_table": "forecast_dataset", "parent_table": "monthly_defaults", "parent_type": "source_dataset" },
+      { "child_table": "forecast_dataset", "parent_table": "economic_indicators", "parent_type": "source_dataset" }
+    ],
+    "proj-003": [],
+    "proj-004": [],
+    "proj-005": [
+      { "child_table": "policy_features", "parent_table": "claim_history", "parent_type": "source_dataset" }
+    ]
+  }
+}
