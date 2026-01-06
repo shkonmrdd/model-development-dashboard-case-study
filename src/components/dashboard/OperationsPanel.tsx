@@ -5,8 +5,10 @@ import {
   Binary,
   Columns3,
   Database,
+  GitBranch,
   GitMerge,
   ListChecks,
+  SquareFunction,
   Sparkles,
   Table2,
   User,
@@ -366,7 +368,7 @@ function OperationRow({
                 </span>
 
                 <span className="inline-flex items-center gap-1">
-                  <GitMerge className="h-3.5 w-3.5" />
+                  <GitBranch className="h-3.5 w-3.5" />
                   <span className="font-mono">
                     {op.output_table_version ??
                       "no output version"}
@@ -392,7 +394,7 @@ function OperationRow({
 
           <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
             <span className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap">
-              <Columns3 className="h-3.5 w-3.5" />
+              <SquareFunction className="h-3.5 w-3.5" />
               Params:
             </span>
             {paramEntries.length === 0 ? (

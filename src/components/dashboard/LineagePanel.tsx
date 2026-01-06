@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Merge } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
@@ -96,7 +97,10 @@ export function LineagePanel({ projectId }: { projectId: string }) {
   return (
     <Card id="lineage">
       <CardHeader>
-        <h2 className="text-base font-semibold">Lineage</h2>
+        <div className="flex items-center gap-2">
+          <Merge className="h-5 w-5 text-primary" />
+          <h2 className="text-base font-semibold">Lineage</h2>
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
         {(tablesLoading || edgesLoading) && (
