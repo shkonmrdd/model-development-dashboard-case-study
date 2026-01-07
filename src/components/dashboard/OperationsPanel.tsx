@@ -83,9 +83,9 @@ function opTone(op: OperationLog) {
   return "bg-muted text-foreground/80 border-border";
 }
 
-function formatParamValue(value: unknown) {
-  if (value === null || value === undefined) return "—";
-  if (typeof value === "string") return value;
+function formatParamValuePython(value: unknown) {
+  if (value === null || value === undefined) return "None";
+  if (typeof value === "string") return JSON.stringify(value);
   if (typeof value === "number" || typeof value === "boolean")
     return String(value);
   try {
@@ -93,6 +93,14 @@ function formatParamValue(value: unknown) {
   } catch {
     return String(value);
   }
+}
+
+function formatParamsPython(params: Record<string, unknown> | null | undefined) {
+  const entries = Object.entries(params ?? {});
+  if (entries.length === 0) return "";
+  return entries
+    .map(([key, value]) => `${key}=${formatParamValuePython(value)}`)
+    .join(", ");
 }
 
 function sortOperations(operations: OperationLog[]) {
@@ -321,6 +329,12 @@ function OperationRow({
   Icon: React.ComponentType<{ className?: string }>;
 }) {
   const paramEntries = Object.entries(op.input_parameters ?? {});
+  const tableName = op.affected_table ?? "table";
+  const paramsSignature = formatParamsPython(op.input_parameters);
+  const callSignature = `${tableName}.${op.operation_name}(${paramsSignature})`;
+  const outputSignature = op.output_table_version
+    ? `-> ${op.output_table_version}`
+    : "-> no output";
 
   return (
     <div
@@ -343,11 +357,15 @@ function OperationRow({
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <div className="truncate font-medium">
-                  <span className="font-mono text-[13px]">
-                    {op.operation_name}
+                <div className="min-w-0 font-medium">
+                  <span className="font-mono text-[13px] text-foreground/90">
+                    {callSignature}
                   </span>
                 </div>
+
+                <span className="font-mono text-[11px] text-muted-foreground">
+                  {outputSignature}
+                </span>
 
                 <Badge variant="outline" className="text-[11px]">
                   {op.operation_type}
@@ -369,21 +387,6 @@ function OperationRow({
                   <TooltipContent>Click to copy</TooltipContent>
                 </Tooltip>
               </div>
-
-              <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-                <span className="inline-flex items-center gap-1">
-                  <Table2 className="h-3.5 w-3.5" />
-                  <span className="font-mono">{op.affected_table ?? "—"}</span>
-                </span>
-
-                <span className="inline-flex items-center gap-1">
-                  <GitBranch className="h-3.5 w-3.5" />
-                  <span className="font-mono">
-                    {op.output_table_version ??
-                      "no output version"}
-                  </span>
-                </span>
-              </div>
             </div>
 
             <div className="shrink-0 text-right">
@@ -401,26 +404,22 @@ function OperationRow({
             </div>
           </div>
 
-          <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-            <span className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap">
-              <SquareFunction className="h-3.5 w-3.5" />
-              Params:
+          <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+            <span className="inline-flex items-center gap-1">
+              <Table2 className="h-3.5 w-3.5" />
+              <span className="font-mono">{tableName}</span>
             </span>
-            {paramEntries.length === 0 ? (
-              <span className="font-mono">—</span>
-            ) : (
-              paramEntries.map(([key, value]) => (
-                <span
-                  key={key}
-                  className="inline-flex items-center gap-1 rounded-md border border-border/60 bg-muted/40 px-2 py-0.5 font-mono text-[11px] text-foreground/80 whitespace-nowrap"
-                >
-                  <span className="text-muted-foreground">{key}</span>
-                  <span>=</span>
-                  <span className="text-foreground">
-                    {formatParamValue(value)}
-                  </span>
-                </span>
-              ))
+            <span className="inline-flex items-center gap-1">
+              <GitBranch className="h-3.5 w-3.5" />
+              <span className="font-mono">
+                {op.output_table_version ?? "no output version"}
+              </span>
+            </span>
+            {paramEntries.length === 0 ? null : (
+              <span className="inline-flex items-center gap-1">
+                <SquareFunction className="h-3.5 w-3.5" />
+                <span>{paramEntries.length} params</span>
+              </span>
             )}
           </div>
         </div>
