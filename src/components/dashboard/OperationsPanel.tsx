@@ -95,14 +95,6 @@ function formatParamValuePython(value: unknown) {
   }
 }
 
-function formatParamsPython(params: Record<string, unknown> | null | undefined) {
-  const entries = Object.entries(params ?? {});
-  if (entries.length === 0) return "";
-  return entries
-    .map(([key, value]) => `${key}=${formatParamValuePython(value)}`)
-    .join(", ");
-}
-
 function sortOperations(operations: OperationLog[]) {
   return [...operations].sort((a, b) =>
     b.execution_timestamp.localeCompare(a.execution_timestamp)
@@ -330,8 +322,6 @@ function OperationRow({
 }) {
   const paramEntries = Object.entries(op.input_parameters ?? {});
   const tableName = op.affected_table ?? "table";
-  const paramsSignature = formatParamsPython(op.input_parameters);
-  const callSignature = `${tableName}.${op.operation_name}(${paramsSignature})`;
   const outputSignature = op.output_table_version
     ? `-> ${op.output_table_version}`
     : "-> no output";
@@ -356,17 +346,7 @@ function OperationRow({
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-2">
-                <div className="min-w-0 font-medium">
-                  <span className="font-mono text-[13px] text-foreground/90">
-                    {callSignature}
-                  </span>
-                </div>
-
-                <span className="font-mono text-[11px] text-muted-foreground">
-                  {outputSignature}
-                </span>
-
+              <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                 <Badge variant="outline" className="text-[11px]">
                   {op.operation_type}
                 </Badge>
@@ -404,23 +384,41 @@ function OperationRow({
             </div>
           </div>
 
-          <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-            <span className="inline-flex items-center gap-1">
-              <Table2 className="h-3.5 w-3.5" />
-              <span className="font-mono">{tableName}</span>
-            </span>
-            <span className="inline-flex items-center gap-1">
-              <GitBranch className="h-3.5 w-3.5" />
-              <span className="font-mono">
-                {op.output_table_version ?? "no output version"}
-              </span>
-            </span>
-            {paramEntries.length === 0 ? null : (
-              <span className="inline-flex items-center gap-1">
-                <SquareFunction className="h-3.5 w-3.5" />
-                <span>{paramEntries.length} params</span>
-              </span>
-            )}
+          <div className="mt-3 rounded-lg border border-border/60 bg-muted/30 px-3 py-2">
+            <div className="flex flex-col gap-1 font-mono text-[12px]">
+              <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
+                <Table2 className="h-3.5 w-3.5 text-muted-foreground" />
+                <span className="text-muted-foreground">{tableName}</span>
+                <span className="text-muted-foreground">.</span>
+                <span className="text-foreground">{op.operation_name}</span>
+                <span className="text-muted-foreground">(</span>
+              </div>
+              {paramEntries.length === 0 ? (
+                <div className="flex items-center gap-1 text-muted-foreground">)</div>
+              ) : (
+                <>
+                  <div className="flex flex-col gap-1 pl-5">
+                    {paramEntries.map(([key, value]) => (
+                      <div
+                        key={key}
+                        className="inline-flex items-center gap-1 rounded-md border border-border/60 bg-background/80 px-1.5 py-0.5"
+                      >
+                        <span className="text-muted-foreground">{key}</span>
+                        <span className="text-muted-foreground">=</span>
+                        <span className="text-foreground">
+                          {formatParamValuePython(value)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-1 text-muted-foreground">)</div>
+                </>
+              )}
+              <div className="inline-flex items-center gap-1 text-muted-foreground">
+                <GitBranch className="h-3.5 w-3.5" />
+                <span>{outputSignature}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
