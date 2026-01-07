@@ -28,6 +28,8 @@ The overview route surfaces the required panels from the case study:
 ## Mock API
 
 This dashboard uses Mock Service Worker to intercept `/api/*` requests in the browser.
+Responses include a realistic network delay (randomized between 250–900ms by default).
+Override with `__delay=0` to disable or set a specific value in milliseconds.
 
 ### Production / deployment
 

@@ -10,12 +10,20 @@ const defaultGovernance: Governance = {
   stakeholders: [],
 };
 
+const DEFAULT_DELAY_RANGE_MS = { min: 250, max: 900 };
+
+const getDefaultDelayMs = () => {
+  const { min, max } = DEFAULT_DELAY_RANGE_MS;
+  return Math.floor(min + Math.random() * (max - min));
+};
+
 const parseControlParams = (request: Request) => {
   const url = new URL(request.url);
   const delayParam = url.searchParams.get("__delay");
   const statusParam = url.searchParams.get("__status");
   const networkError = url.searchParams.get("__networkError") === "1";
-  const delayMs = delayParam ? Number(delayParam) : 0;
+  const delayMs =
+    delayParam !== null ? Number(delayParam) : getDefaultDelayMs();
   const status = statusParam ? Number(statusParam) : null;
 
   return {
