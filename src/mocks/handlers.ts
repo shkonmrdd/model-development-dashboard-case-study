@@ -80,7 +80,7 @@ export const handlers = [
     if (blocked) return blocked;
     const projectId = params.projectId as string;
     const operations = db.recent_operations[projectId] ?? [];
-    return HttpResponse.json(operations.slice(0, 10));
+    return HttpResponse.json(operations);
   }),
 
   http.get("/api/governance/:projectId", async ({ params, request }) => {
