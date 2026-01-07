@@ -123,14 +123,23 @@ const LineageNode = React.memo(function LineageNode({
 const nodeTypes = { lineageNode: LineageNode };
 
 export function LineagePanel({ projectId }: { projectId: string }) {
-  const { data: tables, isLoading: tablesLoading } =
-    useProjectTables(projectId);
+  const {
+    data: tables,
+    isLoading: tablesLoading,
+    error: tablesError,
+    refetch: refetchTables,
+  } = useProjectTables(projectId);
   const {
     data: edges,
     isLoading: edgesLoading,
     error,
     refetch,
   } = useProjectLineage(projectId);
+  const combinedError = tablesError ?? error;
+  const handleRetry = React.useCallback(() => {
+    refetchTables();
+    refetch();
+  }, [refetch, refetchTables]);
 
   const [selected, setSelected] = React.useState<string | null>(null);
   const [rf, setRf] = React.useState<ReactFlowInstance<
@@ -299,19 +308,27 @@ export function LineagePanel({ projectId }: { projectId: string }) {
           </PanelSkeleton>
         )}
 
-        {error && (
+        {combinedError && (
           <PanelError
-            title="Unable to load lineage."
-            error={error}
-            onRetry={refetch}
+            title="Unable to load lineage data."
+            error={combinedError}
+            onRetry={handleRetry}
           />
         )}
 
-        {!edgesLoading && !tablesLoading && edges && edges.length === 0 && (
+        {!combinedError &&
+          !edgesLoading &&
+          !tablesLoading &&
+          edges &&
+          edges.length === 0 && (
           <PanelEmpty message="No lineage defined for this project." />
         )}
 
-        {!edgesLoading && !tablesLoading && edges && edges.length > 0 && (
+        {!combinedError &&
+          !edgesLoading &&
+          !tablesLoading &&
+          edges &&
+          edges.length > 0 && (
           <div className="space-y-3">
             <p className="text-xs text-muted-foreground">
               Click a table to highlight upstream dependencies.
