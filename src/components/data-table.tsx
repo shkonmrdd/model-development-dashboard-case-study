@@ -365,6 +365,9 @@ export function DataTable({
     [data]
   )
 
+  // Expected: TanStack Table's useReactTable() is flagged by React Compiler as non-memoizable.
+  // https://react.dev/reference/eslint-plugin-react-hooks/lints/incompatible-library
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,
