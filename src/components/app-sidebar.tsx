@@ -22,7 +22,6 @@ import {
 const user = {
   name: "John Doe",
   email: "john.doe@example.com",
-  avatar: "/avatars/john-doe.jpg",
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
