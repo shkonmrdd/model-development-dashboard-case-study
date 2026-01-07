@@ -123,7 +123,8 @@ const LineageNode = React.memo(function LineageNode({
 const nodeTypes = { lineageNode: LineageNode };
 
 export function LineagePanel({ projectId }: { projectId: string }) {
-  const { data: tables, isLoading: tablesLoading } = useProjectTables(projectId);
+  const { data: tables, isLoading: tablesLoading } =
+    useProjectTables(projectId);
   const {
     data: edges,
     isLoading: edgesLoading,
@@ -132,7 +133,10 @@ export function LineagePanel({ projectId }: { projectId: string }) {
   } = useProjectLineage(projectId);
 
   const [selected, setSelected] = React.useState<string | null>(null);
-  const [rf, setRf] = React.useState<ReactFlowInstance | null>(null);
+  const [rf, setRf] = React.useState<ReactFlowInstance<
+    LineageNode,
+    Edge
+  > | null>(null);
   const flowWrapperRef = React.useRef<HTMLDivElement | null>(null);
 
   const sources = React.useMemo(
@@ -324,7 +328,7 @@ export function LineagePanel({ projectId }: { projectId: string }) {
                   <span>Derived</span>
                 </div>
 
-                <ReactFlow
+                <ReactFlow<LineageNode, Edge>
                   nodes={nodes}
                   edges={flowEdges}
                   nodeTypes={nodeTypes}
@@ -339,8 +343,7 @@ export function LineagePanel({ projectId }: { projectId: string }) {
                   preventScrolling={false}
                   fitViewOptions={{ padding: 0.2 }}
                   fitView
-                >
-                </ReactFlow>
+                ></ReactFlow>
               </div>
             </div>
           </div>
