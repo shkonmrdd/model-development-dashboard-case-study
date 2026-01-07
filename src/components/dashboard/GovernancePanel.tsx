@@ -15,6 +15,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { useProjectGovernance } from "@/lib/api/queries";
@@ -90,16 +92,38 @@ function checklistStatusTone(status?: string) {
 
 export function GovernancePanel({ projectId }: { projectId: string }) {
   const { data, isLoading, error, refetch } = useProjectGovernance(projectId);
+  const [pendingOnly, setPendingOnly] = React.useState(true);
 
   const stakeholders = data?.stakeholders ?? [];
   const checklist = data?.compliance_checklist ?? null;
+  const approvals = data?.approvals ?? [];
+  const hasNonPending = React.useMemo(
+    () =>
+      approvals.some(
+        (approval) => (approval.status ?? "").toLowerCase() !== "pending"
+      ),
+    [approvals]
+  );
+
+  const filteredApprovals = React.useMemo(() => {
+    if (!pendingOnly) return approvals;
+    return approvals.filter(
+      (approval) => (approval.status ?? "").toLowerCase() === "pending"
+    );
+  }, [approvals, pendingOnly]);
 
   const sortedApprovals = React.useMemo(() => {
-    const approvals = data?.approvals ?? [];
-    return [...approvals].sort((a, b) =>
+    return [...filteredApprovals].sort((a, b) =>
         String(b.created_at ?? "").localeCompare(String(a.created_at ?? ""))
     );
-  }, [data?.approvals]);
+  }, [filteredApprovals]);
+
+  const approvalsEmptyMessage =
+    approvals.length === 0
+      ? "No approvals yet."
+      : pendingOnly
+      ? "No pending approvals."
+      : "No approvals match this filter.";
 
   return (
     <Card id="governance" className="relative overflow-hidden">
@@ -201,10 +225,29 @@ export function GovernancePanel({ projectId }: { projectId: string }) {
             <section className="space-y-2">
               <div className="flex items-center justify-between">
                 <div className="text-sm font-medium">Approvals</div>
+                {hasNonPending ? (
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id="approvals-pending-only"
+                      checked={pendingOnly}
+                      onCheckedChange={(checked) =>
+                        setPendingOnly(checked === true)
+                      }
+                      className="bg-background data-[state=unchecked]:bg-background data-[state=checked]:bg-white data-[state=checked]:border-primary/40 data-[state=checked]:text-primary dark:data-[state=checked]:bg-white"
+                    />
+                    <Label
+                      htmlFor="approvals-pending-only"
+                      className="text-xs text-muted-foreground"
+                      title="Show pending approvals only"
+                    >
+                      Pending only
+                    </Label>
+                  </div>
+                ) : null}
               </div>
 
               {sortedApprovals.length === 0 ? (
-                <PanelEmpty message="No approvals yet." />
+                <PanelEmpty message={approvalsEmptyMessage} />
               ) : (
                 <div className="space-y-2">
                   {sortedApprovals.map((approval) => {
