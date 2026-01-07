@@ -18,8 +18,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ## UI Shell
 
 This project uses the `dashboard-01` layout from shadcn/ui as the base shell for the
-project list (`/`) and project overview (`/projects/[projectId]/overview`). The legacy
-`/dashboard` route redirects to `/`.
+project list (`/`) and project overview (`/projects/[projectId]/overview`).
 
 ## Project Overview Sections
 
