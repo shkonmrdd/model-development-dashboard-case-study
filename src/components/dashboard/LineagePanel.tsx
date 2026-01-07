@@ -35,6 +35,7 @@ type LineageNodeData = {
   tableType: "source" | "derived";
   isActive: boolean;
   isHighlighted: boolean;
+  isDimmed: boolean;
   onSelect: (tableName: string) => void;
 };
 
@@ -77,12 +78,16 @@ const LineageNode = React.memo(function LineageNode({
   return (
     <button
       type="button"
-      onClick={() => data.onSelect(data.tableName)}
+      onClick={(event) => {
+        event.stopPropagation();
+        data.onSelect(data.tableName);
+      }}
       className={cn(
         "nodrag nopan flex w-full items-center gap-2 rounded-md border px-3 py-2 text-left text-sm transition",
         data.isHighlighted
           ? "border-primary/60 bg-primary/5 text-primary"
           : "bg-background hover:bg-muted/40",
+        data.isDimmed && "opacity-45",
         data.isActive && "ring-2 ring-primary/40"
       )}
       style={{ width: nodeWidth, height: nodeHeight }}
@@ -150,41 +155,60 @@ export function LineagePanel({ projectId }: { projectId: string }) {
     setSelected((prev) => (prev === tableName ? null : tableName));
   }, []);
 
+  const handleNodeClick = React.useCallback(
+    (_event: React.MouseEvent, node: LineageNode) => {
+      handleSelect(node.id);
+    },
+    [handleSelect]
+  );
+
   const nodes: LineageNode[] = React.useMemo(() => {
     const leftX = 0;
     const rightX = 360;
 
-    const sourceNodes: LineageNode[] = sources.map((t, idx) => ({
-      id: t.table_name,
-      type: "lineageNode",
-      position: { x: leftX, y: idx * rowHeight },
-      data: {
-        tableName: t.table_name,
-        label: t.display_name,
-        tableType: "source",
-        isActive: selected === t.table_name,
-        isHighlighted: highlight.nodes.has(t.table_name),
-        onSelect: handleSelect,
-      },
-      draggable: false,
-      selectable: false,
-    }));
+    const sourceNodes: LineageNode[] = sources.map((t, idx) => {
+      const isActive = selected === t.table_name;
+      const isHighlighted = highlight.nodes.has(t.table_name);
 
-    const derivedNodes: LineageNode[] = derived.map((t, idx) => ({
-      id: t.table_name,
-      type: "lineageNode",
-      position: { x: rightX, y: idx * rowHeight },
-      data: {
-        tableName: t.table_name,
-        label: tableLabel.get(t.table_name) ?? t.table_name,
-        tableType: "derived",
-        isActive: selected === t.table_name,
-        isHighlighted: highlight.nodes.has(t.table_name),
-        onSelect: handleSelect,
-      },
-      draggable: false,
-      selectable: false,
-    }));
+      return {
+        id: t.table_name,
+        type: "lineageNode",
+        position: { x: leftX, y: idx * rowHeight },
+        data: {
+          tableName: t.table_name,
+          label: t.display_name,
+          tableType: "source",
+          isActive,
+          isHighlighted,
+          isDimmed: selected !== null && !isHighlighted && !isActive,
+          onSelect: handleSelect,
+        },
+        draggable: false,
+        selectable: false,
+      };
+    });
+
+    const derivedNodes: LineageNode[] = derived.map((t, idx) => {
+      const isActive = selected === t.table_name;
+      const isHighlighted = highlight.nodes.has(t.table_name);
+
+      return {
+        id: t.table_name,
+        type: "lineageNode",
+        position: { x: rightX, y: idx * rowHeight },
+        data: {
+          tableName: t.table_name,
+          label: tableLabel.get(t.table_name) ?? t.table_name,
+          tableType: "derived",
+          isActive,
+          isHighlighted,
+          isDimmed: selected !== null && !isHighlighted && !isActive,
+          onSelect: handleSelect,
+        },
+        draggable: false,
+        selectable: false,
+      };
+    });
 
     return [...sourceNodes, ...derivedNodes];
   }, [sources, derived, tableLabel, selected, highlight.nodes, handleSelect]);
@@ -210,10 +234,11 @@ export function LineagePanel({ projectId }: { projectId: string }) {
           style: {
             stroke: isActive ? strokePrimary : strokeMuted,
             strokeWidth: isActive ? 2 : 1,
+            opacity: selected ? (isActive ? 1 : 0.2) : 1,
           },
         };
       });
-  }, [edges, nodes, highlight.edges]);
+  }, [edges, nodes, highlight.edges, selected]);
 
   React.useEffect(() => {
     if (!rf) return;
@@ -278,6 +303,7 @@ export function LineagePanel({ projectId }: { projectId: string }) {
                   edges={flowEdges}
                   nodeTypes={nodeTypes}
                   onInit={setRf}
+                  onNodeClick={handleNodeClick}
                   nodesDraggable={false}
                   nodesConnectable={false}
                   elementsSelectable={false}
