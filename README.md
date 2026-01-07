@@ -22,7 +22,7 @@ The overview route surfaces the required panels from the case study:
 - Data Tables Summary (expandable columns + versions)
 - Recent Operations Timeline (last 10, grouped by date)
 - Governance Status (approvals, compliance, stakeholders)
-- Data Lineage mini-view (source → derived with highlights, React Flow pan/zoom)
+- Data Lineage mini-view (source → derived with highlights)
 
 
 ## Mock API
