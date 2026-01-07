@@ -63,7 +63,7 @@ export function ProjectToolbar({
         </Select>
 
         <Select value={departmentFilter} onValueChange={onDepartmentChange}>
-          <SelectTrigger className="h-9 w-[220px]">
+          <SelectTrigger className="h-9 w-55">
             <SelectValue placeholder="Department" />
           </SelectTrigger>
           <SelectContent align="start">
