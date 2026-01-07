@@ -5,6 +5,7 @@ import { Merge, Table2 } from "lucide-react";
 import {
   Handle,
   MarkerType,
+  type NodeMouseHandler,
   Position,
   ReactFlow,
   type Edge,
@@ -83,7 +84,7 @@ const LineageNode = React.memo(function LineageNode({
         data.onSelect(data.tableName);
       }}
       className={cn(
-        "nodrag nopan flex w-full items-center gap-2 rounded-md border px-3 py-2 text-left text-sm transition",
+        "nodrag nopan flex w-full cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-left text-sm transition",
         data.isHighlighted
           ? "border-primary/60 bg-primary/5 text-primary"
           : "bg-background hover:bg-muted/40",
@@ -92,26 +93,28 @@ const LineageNode = React.memo(function LineageNode({
       )}
       style={{ width: nodeWidth, height: nodeHeight }}
     >
-      <Table2
+      <span
         className={cn(
-          "h-4 w-4 shrink-0",
+          "flex h-6 w-6 shrink-0 items-center justify-center rounded-md",
           data.isHighlighted
-            ? "text-primary"
+            ? "bg-primary/10 text-primary"
             : data.tableType === "source"
-            ? "text-emerald-500/70"
-            : "text-sky-500/70"
+            ? "bg-indigo-50 text-indigo-700"
+            : "bg-fuchsia-50 text-fuchsia-700"
         )}
-      />
+      >
+        <Table2 className="h-3.5 w-3.5" />
+      </span>
       <span className="min-w-0 flex-1 truncate">{data.label}</span>
       <Handle
         type="target"
         position={Position.Left}
-        className="pointer-events-none h-2 w-2 !border-0 !bg-transparent"
+        className="pointer-events-none h-2 w-2 border-0! bg-transparent!"
       />
       <Handle
         type="source"
         position={Position.Right}
-        className="pointer-events-none h-2 w-2 !border-0 !bg-transparent"
+        className="pointer-events-none h-2 w-2 border-0! bg-transparent!"
       />
     </button>
   );
@@ -130,6 +133,7 @@ export function LineagePanel({ projectId }: { projectId: string }) {
 
   const [selected, setSelected] = React.useState<string | null>(null);
   const [rf, setRf] = React.useState<ReactFlowInstance | null>(null);
+  const flowWrapperRef = React.useRef<HTMLDivElement | null>(null);
 
   const sources = React.useMemo(
     () => (tables ?? []).filter((t) => t.table_type === "source"),
@@ -155,8 +159,8 @@ export function LineagePanel({ projectId }: { projectId: string }) {
     setSelected((prev) => (prev === tableName ? null : tableName));
   }, []);
 
-  const handleNodeClick = React.useCallback(
-    (_event: React.MouseEvent, node: LineageNode) => {
+  const handleNodeClick = React.useCallback<NodeMouseHandler<LineageNode>>(
+    (_event, node) => {
       handleSelect(node.id);
     },
     [handleSelect]
@@ -245,11 +249,32 @@ export function LineagePanel({ projectId }: { projectId: string }) {
     rf.fitView({ padding: 0.2, duration: 250 });
   }, [rf, nodes.length, flowEdges.length]);
 
+  React.useEffect(() => {
+    if (!rf || !flowWrapperRef.current) return;
+
+    const element = flowWrapperRef.current;
+    let frameId = 0;
+    const observer = new ResizeObserver(() => {
+      if (frameId) cancelAnimationFrame(frameId);
+      frameId = requestAnimationFrame(() => {
+        rf.fitView({ padding: 0.2 });
+      });
+    });
+
+    observer.observe(element);
+
+    return () => {
+      if (frameId) cancelAnimationFrame(frameId);
+      observer.disconnect();
+    };
+  }, [rf]);
+
   const canvasHeight =
     Math.max(sources.length, derived.length) * rowHeight + rowHeight;
+  const hasEdges = !!edges && edges.length > 0;
 
   return (
-    <Card id="lineage" className="gap-1">
+    <Card id="lineage" className={cn("gap-1", hasEdges && "pb-0")}>
       <CardHeader>
         <div className="flex items-center gap-2">
           <Merge className="h-5 w-5 text-primary" />
@@ -288,8 +313,9 @@ export function LineagePanel({ projectId }: { projectId: string }) {
               Click a table to highlight upstream dependencies.
             </p>
 
-            <div className="rounded-md border bg-background">
+            <div className="rounded-md bg-background">
               <div
+                ref={flowWrapperRef}
                 className="relative"
                 style={{ height: Math.max(220, canvasHeight) }}
               >
@@ -304,11 +330,14 @@ export function LineagePanel({ projectId }: { projectId: string }) {
                   nodeTypes={nodeTypes}
                   onInit={setRf}
                   onNodeClick={handleNodeClick}
+                  proOptions={{ hideAttribution: true }}
                   nodesDraggable={false}
                   nodesConnectable={false}
                   elementsSelectable={false}
                   panOnDrag={false}
                   zoomOnScroll={false}
+                  preventScrolling={false}
+                  fitViewOptions={{ padding: 0.2 }}
                   fitView
                 >
                 </ReactFlow>
