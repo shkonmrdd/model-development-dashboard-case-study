@@ -34,15 +34,15 @@ export default function ProjectOverviewPage() {
               aria-label="Build and operations"
             >
               <DataTablesPanel projectId={projectId} />
+              <LineagePanel projectId={projectId} />
               <OperationsPanel projectId={projectId} />
             </section>
 
             <section
               className="space-y-6 lg:col-span-4"
-              aria-label="Governance and lineage"
+              aria-label="Governance"
             >
               <GovernancePanel projectId={projectId} />
-              <LineagePanel projectId={projectId} />
             </section>
           </div>
         </div>
