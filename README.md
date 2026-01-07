@@ -1,7 +1,7 @@
 
 ## Model development dashboard
 
-First, run the development server:
+To run locally:
 
 ```bash
 npm install
@@ -10,10 +10,7 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## UI Shell
 
-This project uses the `dashboard-01` layout from shadcn/ui as the base shell for the
-project list (`/`) and project overview (`/projects/[projectId]/overview`).
 
 ## Project Overview Sections
 
@@ -30,6 +27,16 @@ The overview route surfaces the required panels from the case study:
 This dashboard uses Mock Service Worker to intercept `/api/*` requests in the browser.
 Responses include a realistic network delay (randomized between 250–900ms by default).
 Override with `__delay=0` to disable or set a specific value in milliseconds.
+
+### API routes
+
+Defined in `src/mocks/handlers.ts`:
+- `GET /api/projects`
+- `GET /api/projects/:projectId`
+- `GET /api/project_tables/:projectId`
+- `GET /api/recent_operations/:projectId`
+- `GET /api/governance/:projectId`
+- `GET /api/table_lineage/:projectId`
 
 ### Production / deployment
 
