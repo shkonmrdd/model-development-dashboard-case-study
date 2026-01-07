@@ -16,6 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useProjectTables } from "@/lib/api/queries";
 import type { ColumnRole, ProjectTable, TableVersion } from "@/lib/types";
+import { parseISODate } from "@/lib/utils";
 import { PanelEmpty, PanelError, PanelSkeleton } from "./PanelStates";
 
 const rowSkeletons = Array.from({ length: 4 });
@@ -47,6 +48,12 @@ const numberFormat = new Intl.NumberFormat();
 function formatCountLabel(count: number, singular: string, plural = `${singular}s`) {
   const label = pluralRules.select(count) === "one" ? singular : plural;
   return `${numberFormat.format(count)} ${label}`;
+}
+
+function formatDateLabel(value?: string | null) {
+  if (!value) return "—";
+  const parsed = parseISODate(value);
+  return parsed ? format(parsed, "PP") : "—";
 }
 
 const getCurrentVersion = (table: ProjectTable): TableVersion | undefined =>
@@ -143,7 +150,7 @@ function VersionsList({
                 {checkpointLabel ?? "—"}
               </div>
               <div className="col-span-2 text-xs text-muted-foreground">
-                <div>{format(new Date(version.created_at), "PP")}</div>
+                <div>{formatDateLabel(version.created_at)}</div>
                 <div>{version.created_by}</div>
               </div>
             </div>

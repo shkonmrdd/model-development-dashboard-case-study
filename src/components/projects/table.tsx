@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/table";
 import { statusStyles } from "@/components/projects/constants";
 import type { Project } from "@/lib/types";
+import { parseISODate } from "@/lib/utils";
 
 const missingManagerLabel = "\u2014";
 
@@ -41,10 +42,10 @@ export function ProjectTable({ projects }: ProjectTableProps) {
 
         <TableBody>
           {projects.map((project) => {
-            const updatedDate = new Date(project.updated_at);
-            const relativeUpdated = formatDistanceToNow(updatedDate, {
-              addSuffix: true,
-            });
+            const updatedDate = parseISODate(project.updated_at);
+            const relativeUpdated = updatedDate
+              ? formatDistanceToNow(updatedDate, { addSuffix: true })
+              : "—";
             const departmentName = project.department?.name ?? "No department";
             const projectBadges = (
               <>
@@ -147,7 +148,7 @@ export function ProjectTable({ projects }: ProjectTableProps) {
                 <TableCell className="py-3 text-right text-sm text-muted-foreground">
                   <time
                     dateTime={project.updated_at}
-                    title={format(updatedDate, "PPpp")}
+                    title={updatedDate ? format(updatedDate, "PPpp") : undefined}
                   >
                     {relativeUpdated}
                   </time>

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useProject } from "@/lib/api/queries";
 import type { ProjectStatus } from "@/lib/types";
+import { parseISODate } from "@/lib/utils";
 
 const statusStyles: Record<ProjectStatus, { badge: string; dot: string }> = {
   Draft: {
@@ -31,7 +32,6 @@ const statusStyles: Record<ProjectStatus, { badge: string; dot: string }> = {
     dot: "bg-slate-500",
   },
 };
-
 
 export function ProjectHeader({ projectId }: { projectId: string }) {
   const { data, isLoading, error, refetch } = useProject(projectId);
@@ -89,8 +89,8 @@ export function ProjectHeader({ projectId }: { projectId: string }) {
     );
   }
 
-  const createdAt = new Date(data.created_at);
-  const updatedAt = new Date(data.updated_at);
+  const createdAt = parseISODate(data.created_at);
+  const updatedAt = parseISODate(data.updated_at);
 
   return (
     <section className={containerClassName} aria-label="Project header">
@@ -154,7 +154,9 @@ export function ProjectHeader({ projectId }: { projectId: string }) {
               Created
             </dt>
             <dd className="text-sm font-medium text-foreground">
-              <time dateTime={data.created_at}>{format(createdAt, "PP")}</time>
+              <time dateTime={data.created_at}>
+                {createdAt ? format(createdAt, "PP") : "—"}
+              </time>
             </dd>
           </div>
           <div className="space-y-1">
@@ -162,7 +164,9 @@ export function ProjectHeader({ projectId }: { projectId: string }) {
               Updated
             </dt>
             <dd className="text-sm font-medium text-foreground">
-              <time dateTime={data.updated_at}>{format(updatedAt, "PP")}</time>
+              <time dateTime={data.updated_at}>
+                {updatedAt ? format(updatedAt, "PP") : "—"}
+              </time>
             </dd>
           </div>
         </dl>
