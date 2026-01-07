@@ -28,9 +28,9 @@ export default function ProjectOverviewPage() {
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
           <ProjectHeader projectId={projectId} />
 
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+          <div className="grid grid-cols-1 gap-6 xl:grid-cols-8 2xl:grid-cols-12">
             <section
-              className="space-y-6 lg:col-span-8"
+              className="order-2 space-y-6 xl:col-span-8 2xl:order-1 2xl:col-span-8"
               aria-label="Build and operations"
             >
               <DataTablesPanel projectId={projectId} />
@@ -39,7 +39,7 @@ export default function ProjectOverviewPage() {
             </section>
 
             <section
-              className="space-y-6 lg:col-span-4"
+              className="order-1 space-y-6 xl:col-span-8 2xl:order-2 2xl:col-span-4"
               aria-label="Governance"
             >
               <GovernancePanel projectId={projectId} />
