@@ -10,7 +10,7 @@ type MockProviderProps = {
 };
 
 export default function MockProvider({ children }: MockProviderProps) {
-  const shouldMock = process.env.NEXT_PUBLIC_API_MOCKING === "true";
+  const shouldMock = true;// process.env.NEXT_PUBLIC_API_MOCKING === "true"; commented out to avoid any confusion - always mock for the purpose of this case study
   const [ready, setReady] = useState(!shouldMock);
 
   useEffect(() => {

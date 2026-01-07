@@ -4,13 +4,8 @@
 First, run the development server:
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -34,7 +29,14 @@ The overview route surfaces the required panels from the case study:
 
 This dashboard uses Mock Service Worker to intercept `/api/*` requests in the browser.
 
-1. Create a local `.env.local` file with `NEXT_PUBLIC_API_MOCKING=true`.
-2. Run the dev server and open the app.
+### Production / deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Enable mocking at build time by setting `NEXT_PUBLIC_API_MOCKING=true`.
+- If the app is served from a sub-path, set `NEXT_PUBLIC_BASE_PATH` (or provide a full
+  `NEXT_PUBLIC_MSW_WORKER_URL`) so the worker script can be found.
+- You can override mocking at runtime with `?__mock=1` (enable) or `?__mock=0` (disable);
+  this preference is stored in `localStorage`.
+
+## Assumptions made
+- Decided to split the sample_data.json file into corresponding API routes to match the real world scenario more closely
+- Mock user avatars rely on initials (no image asset requested by default)
