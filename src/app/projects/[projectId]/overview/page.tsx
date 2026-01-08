@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 
-import { DashboardShell } from "@/components/dashboard-shell";
+import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { DataTablesPanel } from "@/components/dashboard/DataTablesPanel";
 import { GovernancePanel } from "@/components/dashboard/GovernancePanel";
 import { LineagePanel } from "@/components/dashboard/LineagePanel";

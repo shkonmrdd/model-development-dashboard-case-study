@@ -1,5 +1,5 @@
 "use client";
-import { DashboardShell } from "@/components/dashboard-shell";
+import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { ProjectListHeader } from "@/components/projects/list-header";
 import { ProjectListStates } from "@/components/projects/list-states";
 import { ProjectStatusTabs } from "@/components/projects/status-tabs";
