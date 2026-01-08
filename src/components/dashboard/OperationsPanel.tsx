@@ -348,8 +348,8 @@ function OperationRow({
         </div>
 
         <div className="min-w-0 flex-1">
-          <div className="flex min-h-9 items-center justify-between gap-3">
-            <div className="min-w-0 flex flex-wrap items-center gap-2">
+          <div className="flex min-h-9 items-center justify-between gap-3 max-sm:flex-col max-sm:items-start">
+            <div className="min-w-0 flex flex-wrap items-center gap-2 max-sm:flex-col max-sm:items-start max-sm:gap-1">
               <div className="text-sm font-semibold text-foreground/90 capitalize">
                 {formatOpTypeLabel(op.operation_type)}
               </div>
@@ -357,7 +357,7 @@ function OperationRow({
                 <TooltipTrigger asChild>
                   <button
                     type="button"
-                    className="rounded-md px-1.5 py-0.5 text-[11px] text-muted-foreground hover:bg-muted"
+                    className="rounded-md px-1.5 py-0.5 text-[11px] text-muted-foreground hover:bg-muted max-sm:self-start"
                     onClick={() =>
                       navigator.clipboard?.writeText(op.operation_log_id)
                     }
@@ -370,8 +370,8 @@ function OperationRow({
               </Tooltip>
             </div>
 
-            <div className="shrink-0">
-              <div className="inline-flex items-center gap-3 text-xs text-muted-foreground">
+            <div className="shrink-0 max-sm:w-full">
+              <div className="inline-flex items-center gap-3 text-xs text-muted-foreground max-sm:flex-col max-sm:items-start max-sm:gap-1">
                 <span className="inline-flex items-center gap-1">
                   <User className="h-3.5 w-3.5" />
                   {op.executed_by?.name ?? "Unknown user"}
@@ -381,8 +381,8 @@ function OperationRow({
             </div>
           </div>
 
-          <div className="mt-3 rounded-lg border border-border/60 bg-muted/30 px-3 py-2">
-            <div className="flex flex-col gap-1 font-mono text-[12px]">
+          <div className="mt-3 rounded-lg border border-border/60 bg-muted/30 px-3 py-2 max-sm:overflow-x-auto max-sm:pb-2">
+            <div className="flex flex-col gap-1 font-mono text-[12px] max-sm:w-max max-sm:min-w-full">
               <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
                 <Table2 className="h-3.5 w-3.5 text-muted-foreground" />
                 <span className="text-muted-foreground">{tableName}</span>
@@ -399,7 +399,7 @@ function OperationRow({
                     {paramEntries.map(([key, value]) => (
                       <div
                         key={key}
-                        className="inline-flex items-center gap-1 rounded-md bg-transparent px-1.5 py-0.5"
+                        className="inline-flex items-center gap-1 rounded-md bg-transparent px-1.5 py-0.5 max-sm:whitespace-nowrap"
                       >
                         <span className="text-muted-foreground">{key}</span>
                         <span className="text-muted-foreground">=</span>
