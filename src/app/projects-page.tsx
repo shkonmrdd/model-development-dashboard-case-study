@@ -1,16 +1,13 @@
 "use client";
-
-import { useMemo } from "react";
 import { DashboardShell } from "@/components/dashboard-shell";
 import { ProjectListHeader } from "@/components/projects/list-header";
 import { ProjectListStates } from "@/components/projects/list-states";
 import { ProjectStatusTabs } from "@/components/projects/status-tabs";
 import { ProjectTable } from "@/components/projects/table";
 import { ProjectToolbar } from "@/components/projects/toolbar";
-import { statusOptions } from "@/components/projects/constants";
 import { useProjectFilters } from "@/components/projects/use-filters";
+import { useProjectListDerived } from "@/components/projects/use-projects-derived";
 import { useProjects } from "@/lib/api/queries";
-import type { ProjectStatus } from "@/lib/types";
 
 export function ProjectsPage() {
   const { data, isLoading, error, refetch } = useProjects();
@@ -25,78 +22,14 @@ export function ProjectsPage() {
     clearFilters,
   } = useProjectFilters();
 
-  const statusTotals = useMemo(() => {
-    const totals = Object.fromEntries(
-      statusOptions.map((status) => [status, 0])
-    ) as Record<ProjectStatus, number>;
-
-    data?.forEach((project) => {
-      totals[project.status] += 1;
+  const { statusTotals, filteredProjects, departmentOptions } =
+    useProjectListDerived(data, {
+      query,
+      statusFilter,
+      typeFilter,
+      departmentFilter,
+      sortFilter,
     });
-
-    return totals;
-  }, [data]);
-
-  const filteredProjects = useMemo(() => {
-    if (!data) return [];
-
-    const normalizedQuery = query.trim().toLowerCase();
-    let items = [...data];
-
-    if (normalizedQuery) {
-      items = items.filter((project) => {
-        const ownerName = project.owner?.name ?? "";
-        const gmName = project.governance_manager?.name ?? "";
-        const dept = project.department?.name ?? "";
-        return (
-          project.project_name.toLowerCase().includes(normalizedQuery) ||
-          ownerName.toLowerCase().includes(normalizedQuery) ||
-          gmName.toLowerCase().includes(normalizedQuery) ||
-          dept.toLowerCase().includes(normalizedQuery)
-        );
-      });
-    }
-
-    if (statusFilter !== "all") {
-      items = items.filter((project) => project.status === statusFilter);
-    }
-
-    if (typeFilter !== "all") {
-      items = items.filter((project) => project.project_type === typeFilter);
-    }
-
-    if (departmentFilter !== "all") {
-      items = items.filter(
-        (project) => project.department?.name === departmentFilter
-      );
-    }
-
-    items.sort((a, b) => {
-      if (sortFilter === "name_asc") {
-        return a.project_name.localeCompare(b.project_name);
-      }
-
-      const aUpdated = new Date(a.updated_at).getTime();
-      const bUpdated = new Date(b.updated_at).getTime();
-      if (sortFilter === "updated_asc") return aUpdated - bUpdated;
-      return bUpdated - aUpdated;
-    });
-
-    return items;
-  }, [data, query, statusFilter, typeFilter, departmentFilter, sortFilter]);
-
-  const departmentOptions = useMemo(() => {
-    if (!data) return [];
-    const departmentNames = new Set<string>();
-
-    data.forEach((project) => {
-      if (project.department?.name) {
-        departmentNames.add(project.department.name);
-      }
-    });
-
-    return Array.from(departmentNames).sort((a, b) => a.localeCompare(b));
-  }, [data]);
 
   return (
     <DashboardShell breadcrumbs={[{ label: "Projects" }]}>
