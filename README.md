@@ -1,5 +1,13 @@
 
-## Model development dashboard
+## Model Development Dashboard
+A case study UI for a data‑science model development dashboard, focused on clarity, governance, and operational visibility.
+
+Key ideas showcased:
+- Clear project header with ownership, status, and timelines
+- Data tables summary with version awareness
+- Recent operations timeline with filtering
+- Governance status and stakeholders
+- Lightweight data lineage preview
 
 To run locally:
 
