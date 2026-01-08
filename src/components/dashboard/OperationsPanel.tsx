@@ -16,68 +16,21 @@ import { useProjectOperations } from "@/lib/api/queries";
 
 import type { OperationLog } from "@/lib/types";
 import { OperationRow } from "./operations/OperationsRow";
-
 import {
-  Binary,
-  ChartNoAxesGantt,
-  Columns3,
-  Database,
-  GitMerge,
-  Sparkles,
-  Table2,
-} from "lucide-react";
+  formatCountLabel,
+  formatDateLabel,
+  getLocalDateKey,
+  MAX_VISIBLE,
+  OpFilter,
+  filterOptions,
+  numberFormat,
+  opIcon,
+  sortOperations,
+} from "./operations/operations.utils";
+
+import { ChartNoAxesGantt } from "lucide-react";
 
 const listSkeletons = Array.from({ length: 4 });
-const pluralRules = new Intl.PluralRules();
-const numberFormat = new Intl.NumberFormat();
-
-function formatDateLabel(date: Date) {
-  return new Intl.DateTimeFormat(undefined, {
-    month: "short",
-    day: "2-digit",
-    year: "numeric",
-  }).format(date);
-}
-
-function getLocalDateKey(date: Date) {
-  const year = date.getFullYear();
-  const month = `${date.getMonth() + 1}`.padStart(2, "0");
-  const day = `${date.getDate()}`.padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
-function opIcon(op: OperationLog) {
-  const name = op.operation_name.toLowerCase();
-  if (name.includes("merge")) return GitMerge;
-  if (name.includes("upload")) return Database;
-  if (op.operation_type === "column_action") return Columns3;
-  if (op.operation_type === "table_action") return Table2;
-  if (op.operation_type === "table_operation") return Binary;
-  return Sparkles;
-}
-
-function sortOperations(operations: OperationLog[]) {
-  return [...operations].sort((a, b) =>
-    b.execution_timestamp.localeCompare(a.execution_timestamp)
-  );
-}
-
-function formatCountLabel(count: number, singular: string, plural = `${singular}s`) {
-  const label = pluralRules.select(count) === "one" ? singular : plural;
-  return `${numberFormat.format(count)} ${label}`;
-}
-
-type OpFilter = "all" | "column_action" | "table_action" | "table_operation" | "other";
-
-const filterOptions: Array<{ value: OpFilter; label: string }> = [
-  { value: "all", label: "All" },
-  { value: "column_action", label: "Column" },
-  { value: "table_action", label: "Table" },
-  { value: "table_operation", label: "Ops" },
-  { value: "other", label: "Other" },
-];
-
-const MAX_VISIBLE = 20;
 
 export function OperationsPanel({
   projectId,
