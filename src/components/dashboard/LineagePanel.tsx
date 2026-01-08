@@ -1,126 +1,28 @@
 "use client";
 
 import * as React from "react";
-import { Merge, Table2 } from "lucide-react";
+import { Merge } from "lucide-react";
 import {
-  Handle,
   MarkerType,
   type NodeMouseHandler,
-  Position,
   ReactFlow,
   type Edge,
-  type Node,
-  type NodeProps,
   type ReactFlowInstance,
 } from "@xyflow/react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { useProjectLineage, useProjectTables } from "@/lib/api/queries";
-import type { TableLineageEdge } from "@/lib/types";
 import { PanelEmpty, PanelError, PanelSkeleton } from "./PanelStates";
+import { nodeTypes } from "./lineage/LineageNode";
+import {
+  buildUpstream,
+  getEdgeId,
+  type LineageNode as LineageNodeType,
+} from "./lineage/utils";
 
 const rowHeight = 44;
-const nodeWidth = 240;
-const nodeHeight = 40;
 const listSkeletons = Array.from({ length: 4 });
-
-type HighlightState = {
-  nodes: Set<string>;
-  edges: Set<string>;
-};
-
-type LineageNodeData = {
-  label: string;
-  tableName: string;
-  tableType: "source" | "derived";
-  isActive: boolean;
-  isHighlighted: boolean;
-  isDimmed: boolean;
-  onSelect: (tableName: string) => void;
-};
-
-type LineageNode = Node<LineageNodeData, "lineageNode">;
-
-const getEdgeId = (edge: TableLineageEdge) =>
-  `${edge.parent_table}->${edge.child_table}`;
-
-const buildUpstream = (
-  edges: TableLineageEdge[],
-  selected: string | null
-): HighlightState => {
-  if (!selected) return { nodes: new Set(), edges: new Set() };
-
-  const nodes = new Set<string>([selected]);
-  const edgeIds = new Set<string>();
-  const stack = [selected];
-
-  while (stack.length > 0) {
-    const current = stack.pop();
-    if (!current) continue;
-
-    edges
-      .filter((edge) => edge.child_table === current)
-      .forEach((edge) => {
-        edgeIds.add(getEdgeId(edge));
-        if (!nodes.has(edge.parent_table)) {
-          nodes.add(edge.parent_table);
-          stack.push(edge.parent_table);
-        }
-      });
-  }
-
-  return { nodes, edges: edgeIds };
-};
-
-const LineageNode = React.memo(function LineageNode({
-  data,
-}: NodeProps<LineageNode>) {
-  return (
-    <button
-      type="button"
-      onClick={(event) => {
-        event.stopPropagation();
-        data.onSelect(data.tableName);
-      }}
-      className={cn(
-        "nodrag nopan flex w-full cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-left text-sm transition",
-        data.isHighlighted
-          ? "border-primary/60 bg-primary/5 text-primary"
-          : "bg-background hover:bg-muted/40",
-        data.isDimmed && "opacity-45",
-        data.isActive && "ring-2 ring-primary/40"
-      )}
-      style={{ width: nodeWidth, height: nodeHeight }}
-    >
-      <span
-        className={cn(
-          "flex h-6 w-6 shrink-0 items-center justify-center rounded-md",
-          data.isHighlighted
-            ? "bg-primary/10 text-primary"
-            : data.tableType === "source"
-            ? "bg-indigo-50 text-indigo-700"
-            : "bg-fuchsia-50 text-fuchsia-700"
-        )}
-      >
-        <Table2 className="h-3.5 w-3.5" />
-      </span>
-      <span className="min-w-0 flex-1 truncate">{data.label}</span>
-      <Handle
-        type="target"
-        position={Position.Left}
-        className="pointer-events-none h-2 w-2 border-0! bg-transparent!"
-      />
-      <Handle
-        type="source"
-        position={Position.Right}
-        className="pointer-events-none h-2 w-2 border-0! bg-transparent!"
-      />
-    </button>
-  );
-});
-
-const nodeTypes = { lineageNode: LineageNode };
 
 export function LineagePanel({ projectId }: { projectId: string }) {
   const {
@@ -143,7 +45,7 @@ export function LineagePanel({ projectId }: { projectId: string }) {
 
   const [selected, setSelected] = React.useState<string | null>(null);
   const [rf, setRf] = React.useState<ReactFlowInstance<
-    LineageNode,
+    LineageNodeType,
     Edge
   > | null>(null);
   const flowWrapperRef = React.useRef<HTMLDivElement | null>(null);
@@ -172,18 +74,20 @@ export function LineagePanel({ projectId }: { projectId: string }) {
     setSelected((prev) => (prev === tableName ? null : tableName));
   }, []);
 
-  const handleNodeClick = React.useCallback<NodeMouseHandler<LineageNode>>(
+  const handleNodeClick = React.useCallback<
+    NodeMouseHandler<LineageNodeType>
+  >(
     (_event, node) => {
       handleSelect(node.id);
     },
     [handleSelect]
   );
 
-  const nodes: LineageNode[] = React.useMemo(() => {
+  const nodes: LineageNodeType[] = React.useMemo(() => {
     const leftX = 0;
     const rightX = 360;
 
-    const sourceNodes: LineageNode[] = sources.map((t, idx) => {
+    const sourceNodes: LineageNodeType[] = sources.map((t, idx) => {
       const isActive = selected === t.table_name;
       const isHighlighted = highlight.nodes.has(t.table_name);
 
@@ -205,7 +109,7 @@ export function LineagePanel({ projectId }: { projectId: string }) {
       };
     });
 
-    const derivedNodes: LineageNode[] = derived.map((t, idx) => {
+    const derivedNodes: LineageNodeType[] = derived.map((t, idx) => {
       const isActive = selected === t.table_name;
       const isHighlighted = highlight.nodes.has(t.table_name);
 
@@ -345,7 +249,7 @@ export function LineagePanel({ projectId }: { projectId: string }) {
                   <span>Derived</span>
                 </div>
 
-                <ReactFlow<LineageNode, Edge>
+                <ReactFlow<LineageNodeType, Edge>
                   nodes={nodes}
                   edges={flowEdges}
                   nodeTypes={nodeTypes}
