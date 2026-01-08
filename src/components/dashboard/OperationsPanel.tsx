@@ -196,7 +196,7 @@ export function OperationsPanel({
         <div className="absolute -bottom-24 -left-24 h-56 w-56 rounded-full bg-muted/80 blur-3xl" />
       </div>
 
-      <CardHeader className="relative">
+      <CardHeader className="relative max-sm:px-4">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <CardTitle className="flex items-center gap-1.5 text-base">
@@ -229,7 +229,7 @@ export function OperationsPanel({
         </div>
       </CardHeader>
 
-      <CardContent className="relative space-y-4">
+      <CardContent className="relative space-y-4 max-sm:px-4">
         {isLoading && (
           <PanelSkeleton>
             {listSkeletons.map((_, index) => (
@@ -301,7 +301,7 @@ export function OperationsPanel({
         )}
       </CardContent>
       {hasMore ? (
-        <CardFooter className="relative justify-end">
+        <CardFooter className="relative justify-end max-sm:px-4">
           <Button
             type="button"
             variant="ghost"
@@ -337,14 +337,14 @@ function OperationRow({
         "hover:-translate-y-px hover:shadow-md"
       )}
     >
-      <div className="grid grid-cols-[36px_1fr] items-start gap-3">
+      <div className="grid grid-cols-[36px_1fr] items-start gap-3 max-sm:grid-cols-[28px_1fr] max-sm:gap-2">
         <div
           className={cn(
-            "flex h-9 w-9 items-center justify-center rounded-lg border",
+            "flex h-9 w-9 items-center justify-center rounded-lg border max-sm:h-7 max-sm:w-7",
             opTone(op)
           )}
         >
-          <Icon className="h-4 w-4" />
+          <Icon className="h-4 w-4 max-sm:h-3 max-sm:w-3" />
         </div>
 
         <div className="min-w-0 flex-1">
