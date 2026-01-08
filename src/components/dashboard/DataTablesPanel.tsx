@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useProjectTables } from "@/lib/api/queries";
 import { PanelEmpty, PanelError, PanelSkeleton } from "./PanelStates";
-import { TableAccordion } from "./dataTables/TableAccordion";
+import { TableAccordion } from "./tables/TableAccordion";
 
 const rowSkeletons = Array.from({ length: 4 });
 
