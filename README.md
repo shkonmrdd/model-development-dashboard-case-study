@@ -66,3 +66,4 @@ Defined in `src/mocks/handlers.ts`:
 - React Flow (`@xyflow/react`) is used for the lineage diagram because it’s feature‑rich and easy to extend.
 - Recent operations return the full mock dataset and are grouped by date; the UI defaults to a smaller visible slice with “Show more.”
 - If `current_version_id` is missing, tables fall back to the latest version in the list.
+- Login was not required for the assignment, so the user avatar and profile are mock UI only.
