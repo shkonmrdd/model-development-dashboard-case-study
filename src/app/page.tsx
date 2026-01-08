@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { ProjectsPage } from "@/app/projects-page";
+import { ProjectsPage } from "@/components/projects/projects-page";
 
 function ProjectsFallback() {
   return (
