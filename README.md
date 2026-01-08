@@ -69,3 +69,6 @@ Defined in `src/mocks/handlers.ts`:
 - Login was not required for the assignment, so the user avatar and profile are mock UI only.
 - Optimized for Full HD desktop screen size (1920×1080), laptops, and tablets. It can be opened on a mobile phone, but more work is needed to make it truly mobile‑friendly.
 - Responsive behavior is implemented with a few breakpoints to adjust layout between desktop and tablet views.
+
+## Notes
+- The Mock Service Worker can stop working if the tab is left in the background for too long (I’ll look into this).
