@@ -67,3 +67,5 @@ Defined in `src/mocks/handlers.ts`:
 - Recent operations return the full mock dataset and are grouped by date; the UI defaults to a smaller visible slice with “Show more.”
 - If `current_version_id` is missing, tables fall back to the latest version in the list.
 - Login was not required for the assignment, so the user avatar and profile are mock UI only.
+- Optimized for Full HD desktop screen size (1920×1080), laptops, and tablets. It can be opened on a mobile phone, but more work is needed to make it truly mobile‑friendly.
+- Responsive behavior is implemented with a few breakpoints to adjust layout between desktop and tablet views.
