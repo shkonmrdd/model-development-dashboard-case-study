@@ -2,6 +2,23 @@
 
 import * as React from "react";
 import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
+import { PanelEmpty, PanelError, PanelSkeleton } from "./PanelStates";
+import { useProjectOperations } from "@/lib/api/queries";
+
+import type { OperationLog } from "@/lib/types";
+
+import {
   Binary,
   ChartNoAxesGantt,
   Columns3,
@@ -13,23 +30,6 @@ import {
   Table2,
   User,
 } from "lucide-react";
-
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { useProjectOperations } from "@/lib/api/queries";
-import type { OperationLog } from "@/lib/types";
-import { cn } from "@/lib/utils";
-import { PanelEmpty, PanelError, PanelSkeleton } from "./PanelStates";
 
 const listSkeletons = Array.from({ length: 4 });
 const pluralRules = new Intl.PluralRules();
